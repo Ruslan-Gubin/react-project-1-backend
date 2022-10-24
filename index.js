@@ -2,9 +2,10 @@ import express from "express";
 import mongoose from "mongoose";
 import chalk from "chalk";
 import cors from "cors";
-import { MONGO_DB_PRODUCTS } from "./service/constants/namePassDb.js";
+// import { MONGO_DB_PRODUCTS } from "./service/constants/namePassDb.js";
 import * as routes from "./routes/index.js";
-
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 const errorNsg = chalk.bgKeyword("white").redBright;
 const successNsg = chalk.bgKeyword("green").white;
@@ -16,7 +17,7 @@ app.use("/uploads", express.static("uploads"));
 
 (async () => {
   await mongoose
-    .connect(MONGO_DB_PRODUCTS)
+    .connect(process.env.MONGO_URL)
     // .connect(process.env.MONGODB_URI)
     .then((res) => console.log(successNsg("DB Product ok")))
     .catch((err) => console.log(errorNsg("DB error, err")));
