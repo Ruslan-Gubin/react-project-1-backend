@@ -1,11 +1,11 @@
 {
   "name": "project-1-shop-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "a really cool app",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
