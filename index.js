@@ -16,7 +16,8 @@ app.use("/uploads", express.static("uploads"));
 
 (async () => {
   await mongoose
-    .connect(MONGO_DB_PRODUCTS)
+    // .connect(MONGO_DB_PRODUCTS)
+    .connect(process.env.MONGODB_URI)
     .then((res) => console.log(successNsg("DB Product ok")))
     .catch((err) => console.log(errorNsg("DB error, err")));
    
