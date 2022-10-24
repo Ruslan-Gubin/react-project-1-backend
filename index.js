@@ -20,16 +20,16 @@ app.use("/uploads", express.static("uploads"));
     .connect(process.env.MONGODB_URI)
     .then((res) => console.log(successNsg("DB Product ok")))
     .catch((err) => console.log(errorNsg("DB error, err")));
+  })();
    
 //Routes
   app.use(routes.apiProductRoutes);
   app.use(routes.apiPostRoutes);
   app.use(routes.apiAuthRoutes);
   app.use(routes.apiUploadRoutes);
-
+  
   app.listen(process.env.PORT || 4444, (error) => {
     error
       ? console.log(errorNsg(error))
       : console.log(successNsg(`Listening port ${process.env.PORT || 4444}`));
   });
-})();
