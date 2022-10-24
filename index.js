@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import chalk from "chalk";
 import cors from "cors";
 import { MONGO_DB_PRODUCTS } from "./service/constants/namePassDb.js";
-import { apiPostRoutes, apiProductRoutes, apiAuthRoutes, apiUploadRoutes} from "./routes/index.js";
+import * as routes from "./routes/index.js";
 
 
 const errorNsg = chalk.bgKeyword("white").redBright;
@@ -20,10 +20,10 @@ app.use("/uploads", express.static("uploads"));
     .then((res) => console.log(successNsg("DB Product ok")))
     .catch((err) => console.log(errorNsg("DB error, err")));
    
-  app.use(apiProductRoutes);
-  app.use(apiPostRoutes);
-  app.use(apiAuthRoutes);
-  app.use(apiUploadRoutes);
+  app.use(routes.apiProductRoutes);
+  app.use(routes.apiPostRoutes);
+  app.use(routes.apiAuthRoutes);
+  app.use(routes.apiUploadRoutes);
 
   app.listen(process.env.PORT || 4444, (error) => {
     error
