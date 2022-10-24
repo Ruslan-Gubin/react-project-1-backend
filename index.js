@@ -20,6 +20,7 @@ app.use("/uploads", express.static("uploads"));
     .then((res) => console.log(successNsg("DB Product ok")))
     .catch((err) => console.log(errorNsg("DB error, err")));
    
+//Routes
   app.use(routes.apiProductRoutes);
   app.use(routes.apiPostRoutes);
   app.use(routes.apiAuthRoutes);
