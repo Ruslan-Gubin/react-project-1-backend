@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import chalk from "chalk";
 import cors from "cors";
-import { MONGO_DB_PRODUCTS } from "./service/constants/namePassDb.js";
+
 import * as routes from "./routes/index.js";
 
 
