@@ -15,20 +15,19 @@ app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
-(async () => {
-  await mongoose
+// (async () => {
+   mongoose
     .connect(process.env.MONGO_URL)
-    // .connect(process.env.MONGODB_URI)
-    .then((res) => console.log(successNsg("DB Product ok")))
-    .catch((err) => console.log(errorNsg("DB error, err")));
-  })();
+    .then(() => console.log(successNsg("DB Product ok")))
+    .catch((err) => console.log(errorNsg("DB error", err)));
+  // })();
    
 //Routes
   app.use(routes.apiProductRoutes);
   app.use(routes.apiPostRoutes);
   app.use(routes.apiAuthRoutes);
   app.use(routes.apiUploadRoutes);
-  
+
   app.listen(process.env.PORT || 4444, (error) => {
     error
       ? console.log(errorNsg(error))
