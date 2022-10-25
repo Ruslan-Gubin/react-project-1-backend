@@ -18,8 +18,8 @@ app.use("/uploads", express.static("uploads"));
 
 // (async () => {
    mongoose
-    .connect(process.env.MONGO_URL)
-    // .connect('mongodb+srv://Ruslan:gjcnfk156@cluster0.odh79.mongodb.net/products?retryWrites=true&w=majority')
+    // .connect(process.env.MONGO_URL)
+    .connect('mongodb+srv://Ruslan:gjcnfk156@cluster0.odh79.mongodb.net/products?retryWrites=true&w=majority')
     .then(() => console.log(successNsg("DB Product ok")))
     .catch((err) => console.log(errorNsg("DB error", err)));
   // })();
