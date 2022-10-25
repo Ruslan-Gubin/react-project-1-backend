@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 import chalk from "chalk";
 import cors from "cors";
 import * as routes from "./routes/index.js";
-// import * as dotenv from 'dotenv'
-// dotenv.config()
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 // const PORT = process.env.PORT || 80
 
@@ -18,12 +18,12 @@ app.use("/uploads", express.static("uploads"));
 
 // (async () => {
    mongoose
-    .connect(process.env.MONGO_URL || 'mongodb+srv://Ruslan:gjcnfk156@cluster0.odh79.mongodb.net/products?retryWrites=true&w=majority')
+    .connect('mongodb+srv://Ruslan:gjcnfk156@cluster0.odh79.mongodb.net/products?retryWrites=true&w=majority')
     .then(() => console.log(successNsg("DB Product ok")))
     .catch((err) => console.log(errorNsg("DB error", err)));
   // })();
    
-//Routes
+
   app.use(routes.apiProductRoutes);
   app.use(routes.apiPostRoutes);
   app.use(routes.apiAuthRoutes);
