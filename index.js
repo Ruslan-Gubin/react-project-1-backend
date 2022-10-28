@@ -5,6 +5,7 @@ import cors from "cors";
 import * as routes from "./routes/index.js";
 import * as dotenv from "dotenv";
 
+
 const errorNsg = chalk.bgKeyword("white").redBright;
 const successNsg = chalk.bgKeyword("green").white;
 
@@ -25,6 +26,7 @@ app.use(routes.apiProductRoutes);
 app.use(routes.apiPostRoutes);
 app.use(routes.apiAuthRoutes);
 app.use(routes.apiUploadRoutes);
+app.use(routes.commentRouter) 
 
 app.listen(process.env.PORT || 4444, (error) => {
   error

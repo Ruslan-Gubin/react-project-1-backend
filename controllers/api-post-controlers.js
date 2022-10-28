@@ -76,7 +76,7 @@ async getLastTags(req, res) {
   } catch (error) {
     console.log(err);
     res.status(500).json({
-      message: "Не удалось получить статью",
+      message: "Не удалось получить тег",
     });
   }
 };
