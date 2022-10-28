@@ -9,9 +9,9 @@ class CommentService {
     return newComment;
   }
 
-  async getAll() {
+  async getAll(limit) {
     const comment = await commentModel.find().sort({ createdAt: -1 })
-    .limit()
+    .limit(limit)
     .populate("user")
     .exec()
     return comment;

@@ -14,7 +14,7 @@ class CommentController {
 
   async getAll(req, res) {
     await commentService
-      .getAll()
+      .getAll(req.params.limit)
       .then((comments) => res.status(200).json(comments))
       .catch((error) =>
         handleError(res, error, "Ну удалось получить все комментарии")
