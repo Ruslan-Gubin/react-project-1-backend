@@ -15,9 +15,9 @@ const UserShema = new mongoose.Schema(
       type: String,
       require: true,
     },
-    avatarUrl: String,
+    avatarUrl: String, 
   },
   { timestamps: true }// дата создания
 );
 
-export default mongoose.model("User", UserShema);
+export const userModel = mongoose.model("User", UserShema);

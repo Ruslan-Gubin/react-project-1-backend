@@ -1,6 +1,6 @@
 import { commentModel } from "../models/comments.js";
-import { commentService } from "../service/commentService.js";
-import { handleError } from "../service/handlerError.js";
+import { commentService } from "../service/index.js";
+import { handleError } from "../utils/index.js";
 
 class CommentController {
   async create(req, res) {

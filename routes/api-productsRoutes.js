@@ -1,12 +1,12 @@
-import Router from 'express';
-import ProductController from '../controllers/api-products-controlers.js';
+import Router from "express";
+import { productController } from "../controllers/index.js";
 
-const router = new Router()
+const router = new Router();
 
-router.get("/api/products", ProductController.getProducts);
-router.get("/api/products/:id", ProductController.getOneProduct);
-router.post("/api/products", ProductController.addProduct);
-router.put("/api/products", ProductController.editProduct);
-router.delete("/api/products/:id", ProductController.deleteProduct);
+router.get("/api/products", productController.getProducts);
+router.get("/api/products/:id", productController.getOneProduct);
+router.post("/api/products", productController.addProduct);
+router.put("/api/products", productController.editProduct);
+router.delete("/api/products/:id", productController.deleteProduct);
 
-export default router;
+export const productRouter = router;

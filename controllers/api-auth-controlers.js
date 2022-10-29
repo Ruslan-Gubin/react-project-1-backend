@@ -1,110 +1,109 @@
-import User from "../models/user.js";
+import {userModel} from "../models/index.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-class AuthController{
-
+class AuthController {
   async createUser(req, res) {
-  try {
-    const { fullName, email, avatarUrl, password } = req.body;
+    try {
+      const { fullName, email, avatarUrl, password } = req.body;
 
-    const pas = password;
-    const salt = await bcrypt.genSalt(10);
-    const passwordBcrypt = await bcrypt.hash(pas, salt);
+      const pas = password;
+      const salt = await bcrypt.genSalt(10);
+      const passwordBcrypt = await bcrypt.hash(pas, salt);
 
-    const newUser = new User({
-      fullName,
-      email,
-      avatarUrl,
-      passwordHash: passwordBcrypt,
-    });
-    const user = await newUser.save();
+      const newUser = new userModel({
+        fullName,
+        email,
+        avatarUrl,
+        passwordHash: passwordBcrypt,
+      });
+      const user = await newUser.save();
 
-    const token = jwt.sign(
-      {
-        _id: user._id,
-      },
-      "secret123",
-      {
-        expiresIn: "30d",
+      const token = jwt.sign(
+        {
+          _id: user._id,
+        },
+        "secret123",
+        {
+          expiresIn: "30d",
+        }
+      );
+
+      const { passwordHash, ...userData } = user._doc;
+
+      res.json({
+        ...userData,
+        token,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ message: "Не удалось создать пользователя" });
+    }
+  }
+
+  async authorization(req, res) {
+    try {
+      const user = await userModel.findOne({ email: req.body.email });
+
+      if (!user) {
+        return res.status(404).json({
+          massage: "Пользователь не найден",
+        });
       }
-    );
 
-    const { passwordHash, ...userData } = user._doc;
+      const isValidPass = await bcrypt.compare(
+        req.body.password,
+        user._doc.passwordHash
+      );
 
-    res.json({
-      ...userData,
-      token,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({ message: "Не удалось создать пользователя" });
+      if (!isValidPass) {
+        return res.status(400).json({
+          massage: "Неверный логин или пароль",
+        });
+      }
+
+      const token = jwt.sign(
+        {
+          _id: user._id,
+        },
+        "secret123",
+        {
+          expiresIn: "30d",
+        }
+      );
+
+      const { passwordHash, ...userData } = user._doc;
+
+      res.json({
+        ...userData,
+        token,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ message: "Не удалось авторизоватся" });
+    }
   }
-};
 
-async authorization(req, res) {
-  try {
-    const user = await User.findOne({ email: req.body.email });
+  async getInforUsers(req, res) {
+    try {
+      const user = await userModel.findById(req.userId);
 
-    if (!user) {
-      return res.status(404).json({
-        massage: "Пользователь не найден",
+      if (!user) {
+        return res.status(404).json({
+          message: "Пользователь не найден",
+        });
+      }
+
+      const { passwordHash, ...userData } = user._doc;
+
+      res.json(userData);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        massage: "Нет доступа",
       });
     }
-
-    const isValidPass = await bcrypt.compare(
-      req.body.password,
-      user._doc.passwordHash
-    );
-
-    if (!isValidPass) {
-      return res.status(400).json({
-        massage: "Неверный логин или пароль",
-      });
-    }
-
-    const token = jwt.sign(
-      {
-        _id: user._id,
-      },
-      "secret123",
-      {
-        expiresIn: "30d",
-      },
-    );
-
-    const { passwordHash, ...userData } = user._doc;
-
-    res.json({
-      ...userData,
-      token,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({ message: "Не удалось авторизоватся" });
   }
-};
-
-async getInforUsers(req, res) {
-  try {
-    const user = await User.findById(req.userId);
-
-    if (!user) {
-      return res.status(404).json({
-        message: "Пользователь не найден",
-      });
-    }
-
-    const { passwordHash, ...userData } = user._doc;
-
-    res.json(userData);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      massage: "Нет доступа",
-    });
-  }
-};
 }
 
-export default new AuthController();
+export const authController = new AuthController();

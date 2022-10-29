@@ -1,9 +1,9 @@
-import ProductService from "../service/productService.js";
+import { productService } from "../service/index.js";
 
 class ProductController {
   async getProducts(req, res) {
     try {
-      const products = await ProductService.getAll();
+      const products = await productService.getAll();
       return res.json(products);
     } catch (error) {
       res.status(500).json(error, "Не удалось получить все товары");
@@ -12,7 +12,7 @@ class ProductController {
 
   async getOneProduct(req, res) {
     try {
-      const product = await ProductService.getProduct(req.params.id);
+      const product = await productService.getProduct(req.params.id);
       return res.json(product);
     } catch (error) {
       res.status(500).json(error, "Не удалось получить товар");
@@ -21,7 +21,7 @@ class ProductController {
 
   async deleteProduct(req, res) {
     try {
-      await ProductService.remove(req.params.id);
+      await productService.remove(req.params.id);
       return res.status(200).json(req.params.id);
     } catch (error) {
       res.status(500).json(error, "Не удалось удалить товар");
@@ -30,7 +30,7 @@ class ProductController {
 
   async editProduct(req, res) {
     try {
-      const updatedProduct = await ProductService.update(req.body);
+      const updatedProduct = await productService.update(req.body);
       return res.json(updatedProduct);
     } catch (e) {
       res.status(500).json(e.message);
@@ -39,7 +39,7 @@ class ProductController {
 
   async addProduct(req, res) {
     try {
-      const product = await ProductService.create(req.body);
+      const product = await productService.create(req.body);
       res.status(201).json(product);
     } catch (error) {
       res.status(500).json(error, "Не удалось добавить товар");
@@ -47,4 +47,5 @@ class ProductController {
   }
 }
 
-export default new ProductController();
+export const productController = new ProductController()
+

@@ -22,10 +22,10 @@ app.use("/uploads", express.static("uploads"));
     .catch((err) => console.log(errorNsg("DB error", err)));
 })();
 
-app.use(routes.apiProductRoutes);
-app.use(routes.apiPostRoutes);
-app.use(routes.apiAuthRoutes);
-app.use(routes.apiUploadRoutes);
+app.use(routes.productRouter);
+app.use(routes.postRouter);
+app.use(routes.authRouter);
+app.use(routes.uploadRouter);
 app.use(routes.commentRouter) 
 
 app.listen(process.env.PORT || 4444, (error) => {

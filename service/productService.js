@@ -1,18 +1,18 @@
-import Product from "../models/products.js";
+import {productModel} from "../models/index.js";
 
 class ProductService {
   async create(product) {
-    const createdProduct = await (await Product.create(product)).save();
+    const createdProduct = await (await productModel.create(product)).save();
     return createdProduct;
   }
 
   async getAll() {
-    const product = await Product.find().sort({ createdAt: -1 });
+    const product = await productModel.find().sort({ createdAt: -1 });
     return product;
   }
 
   async getProduct(id) {
-    const product = await Product.findById(id);
+    const product = await productModel.findById(id);
     return product;
   }
 
@@ -20,7 +20,7 @@ class ProductService {
     if (!id) {
       throw new Error("не указан ID");
     }
-    const product = await Product.findByIdAndDelete(id);
+    const product = await productModel.findByIdAndDelete(id);
     return product;
   }
 
@@ -36,4 +36,4 @@ class ProductService {
   
 }
 
-export default new ProductService();
+export const productService = new ProductService()

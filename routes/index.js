@@ -1,13 +1,5 @@
-import  apiProductRoutes  from "./api-productsRoutes.js";
-import apiPostRoutes from './api-postRoutes.js';
-import apiUploadRoutes from './api-uploadRoutes.js';
-import apiAuthRoutes from './api-authRoutes.js';
-
-export {commentRouter} from './api-commentRoutes.js';
-
-export {
-  apiProductRoutes,
-  apiPostRoutes,
-  apiUploadRoutes,
-  apiAuthRoutes,
-};
+export { productRouter } from "./api-productsRoutes.js";
+export { commentRouter } from "./api-commentRoutes.js";
+export { uploadRouter } from "./api-uploadRoutes.js";
+export { authRouter } from "./api-authRoutes.js";
+export { postRouter } from "./api-postRoutes.js";

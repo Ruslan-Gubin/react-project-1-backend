@@ -22,7 +22,7 @@ const productsSchema = new Schema(
     types: {
       type: Object,
       color: {
-        type: Array,
+        type: Array,  
       },
       size: {
         type: Array,
@@ -42,13 +42,13 @@ const productsSchema = new Schema(
       required: true,
     },
     discount: {
-      type: Number,
+      type: Number, 
       required: true,
     },
     selected: {
       type: Boolean,
       required: true,
-    },
+    }, 
     counter: {
       type: Number,
       required: true,
@@ -59,4 +59,4 @@ const productsSchema = new Schema(
   }
 );
 
-export default mongoose.model("Products", productsSchema);
+export const productModel = mongoose.model("Products", productsSchema);

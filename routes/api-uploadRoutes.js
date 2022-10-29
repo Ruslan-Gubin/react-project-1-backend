@@ -1,4 +1,4 @@
-import { checkAuth } from "../service/checkAuth.js";
+import { checkAuth } from "../utils/index.js";
 import Router from 'express';
 import multer from 'multer';
 const router = new Router()
@@ -23,4 +23,4 @@ const createUpload = (req, res) => {
     
 router.post('/api/upload', checkAuth, upload.single('image'), createUpload);
 
-export default router;
+export const uploadRouter = router;

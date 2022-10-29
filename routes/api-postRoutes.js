@@ -1,16 +1,22 @@
 import Router from 'express';
-import { handleValidationErrors } from "../service/handleValidationErrors.js";
+import { postController }  from "../controllers/index.js";
+import { handleValidationErrors } from "../utils/index.js";
 import { postCreateValedation } from "../validations/postValidation.js";
-import { checkAuth } from "../service/checkAuth.js";
-import  PostController  from "../controllers/api-post-controlers.js";
+import { checkAuth } from "../utils/index.js";
+
 const router = new Router()
 
+router.route('/api/post/:id')
+.get( postController.getOnePost)
+.patch( checkAuth, postCreateValedation, handleValidationErrors,postController.updatePost)
+.delete( checkAuth, postController.deletePost);
 
-router.patch("/api/post/:id", checkAuth, postCreateValedation, handleValidationErrors,PostController.updatePost);
-router.post("/api/post", checkAuth, postCreateValedation, handleValidationErrors, PostController.createPost);
-router.delete("/api/post/:id", checkAuth, PostController.deletePost);
-router.get("/api/post/:id", PostController.getOnePost);
-router.get("/api/post", PostController.getAllPosts); 
-router.get("/api/tags", PostController.getLastTags); 
+router.route('/api/post')
+.post( checkAuth, postCreateValedation, handleValidationErrors, postController.createPost)
+.get( postController.getAllPosts);
 
-export default router;
+router.get("/api/tags", postController.getTags); 
+
+export const postRouter = router;
+
+
