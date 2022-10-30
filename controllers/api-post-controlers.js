@@ -10,7 +10,7 @@ class PostController {
 
   async getAllPosts(req, res) {
     await postService
-      .getAll()
+      .getAll(req)
       .then((posts) => res.status(200).json(posts))
       .catch((error) => handleError(res, error, "Не удалось найти статьи"));
   }

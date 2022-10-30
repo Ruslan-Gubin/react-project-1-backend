@@ -1,19 +1,49 @@
 import { postModel } from "../models/index.js";
 
 class PostService {
+ 
+  constructor(options) {
+    this.model = options.model
+    this.allposts = []
+  }
+
+async  getAllPost() {
+  return  await this.model.find().sort({ createdAt: -1 }).populate("user").exec();
+  }
+
   async create(req) {
     const user = req.userId;
-    const newPost = await new postModel({ ...req.body, user }).save();
+    const newPost = await new this.model({ ...req.body, user }).save();
     return newPost;
   }
 
-  async getAll() {
-    const post = await postModel
-      .find()
-      .sort({ createdAt: -1 })
-      .populate("user")
-      .exec();
-    return post;
+  async getAll(req) {
+    const views = req.query.views ? req.query.views : false;
+    const search  = req.query.search ? req.query.search.toLowerCase() : '';
+    const tag = req.query.tags ? req.query.tags : false;
+
+   console.log(tag); //3tags
+   console.log(search); //tes
+   console.log(views); // -1
+   
+
+     
+   
+ this.allposts = await this.model.find({$or: [ {tags: tag ? tag : null},{title: search ? search : null}]} ).sort(views ? {viewsCount: views} : {createdAt: -1})
+//  this.allposts = await this.model.find(tag ? {tags: tag} : null || search ? {title: search} : null ).sort(views ? {viewsCount: views} : {createdAt: -1})
+      
+  
+    // const searchText = this.allposts.filter(item => item.title.toLowerCase().includes(search.toLowerCase()))
+    
+ 
+    return this.allposts;
+    // return searchText;
+  }
+
+  async searchTags(req) {
+    const tag = req.query.tags
+    const tags = await this.model.find({tags: tag})
+    return tags
   }
 
   async findOne(id) {
@@ -21,7 +51,7 @@ class PostService {
       throw new Error("Не найден ID");
     }
 
-    const post = await postModel
+    const post = await this.model
       .findOneAndUpdate(
         { _id: id },
         { $inc: { viewsCount: 1 } },
@@ -35,22 +65,16 @@ class PostService {
     if (!id) {
       throw new Error("не указан ID");
     }
-    const post = await postModel.findByIdAndDelete(id);
+    const post = await this.model.findByIdAndDelete(id);
     return post;
   }
 
   async update(req) {
     const postId = req.params.id;
-    const post = await postModel.updateOne(
+    const post = await this.model.updateOne(
       { _id: postId },
-      {
-        title: req.body.title,
-        text: req.body.text,
-        imageUrl: req.body.imageUrl,
-        user: req.userId,
-        tags: req.body.tags,
-      }
-    );
+      {...req.body}
+      );  
     return post;
   }
 
@@ -59,9 +83,9 @@ class PostService {
     const result = [];
     const filterTags = [];
 
-    const posts = await postModel.find().sort({ createdAt: -1 }).exec();
+    const arrayTags = await this.model.find({},{tags: true, _id: false}).sort({createdAt: -1})
 
-    const tags = posts.map((obj) => obj.tags.join("").trim().split(" "));
+    const tags = arrayTags.map((obj) => obj.tags.join("").trim().split(" "));
 
     tags.map((item) => (item ? filterTags.push(...item) : false));
 
@@ -81,4 +105,4 @@ class PostService {
   
 }
 
-export const postService = new PostService();
+export const postService = new PostService({model: postModel});

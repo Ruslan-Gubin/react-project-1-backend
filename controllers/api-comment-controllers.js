@@ -1,4 +1,3 @@
-import { commentModel } from "../models/comments.js";
 import { commentService } from "../service/index.js";
 import { handleError } from "../utils/index.js";
 

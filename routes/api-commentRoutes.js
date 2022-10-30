@@ -6,12 +6,14 @@ import { commentValedation } from '../validations/commentValidation.js';
 
 const router = new Router()
 
+router.route('/api/comments')
+.get(commentController.getAll)
+.post(checkAuth, commentValedation, handleValidationErrors, commentController.create);
 
-router.post("/api/comments", checkAuth, commentValedation, handleValidationErrors, commentController.create);
-router.get("/api/comments", commentController.getAll); 
-router.get("/api/comments/:id", commentController.getOne);
-router.delete("/api/comments/:id", checkAuth, commentController.remove);
-router.patch("/api/comments/:id", checkAuth, commentValedation, handleValidationErrors,commentController.update);
+router.route('/api/comments/:id')
+.get(commentController.getOne)
+.delete(checkAuth, commentController.remove)
+.patch(checkAuth, commentValedation, handleValidationErrors,commentController.update);
 
 
 export const commentRouter = router;

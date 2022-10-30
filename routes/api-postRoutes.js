@@ -8,12 +8,12 @@ const router = new Router()
 
 router.route('/api/post/:id')
 .get( postController.getOnePost)
-.patch( checkAuth, postCreateValedation, handleValidationErrors,postController.updatePost)
-.delete( checkAuth, postController.deletePost);
+.delete( checkAuth, postController.deletePost)
+.patch( checkAuth, postCreateValedation, handleValidationErrors,postController.updatePost);
 
 router.route('/api/post')
-.post( checkAuth, postCreateValedation, handleValidationErrors, postController.createPost)
-.get( postController.getAllPosts);
+.get( postController.getAllPosts)
+.post( checkAuth, postCreateValedation, handleValidationErrors, postController.createPost);
 
 router.get("/api/tags", postController.getTags); 
 

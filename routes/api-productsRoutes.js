@@ -3,10 +3,15 @@ import { productController } from "../controllers/index.js";
 
 const router = new Router();
 
-router.get("/api/products", productController.getProducts);
-router.get("/api/products/:id", productController.getOneProduct);
-router.post("/api/products", productController.addProduct);
-router.put("/api/products", productController.editProduct);
-router.delete("/api/products/:id", productController.deleteProduct);
+router
+  .route("/api/products")
+  .get(productController.getProducts)
+  .post(productController.addProduct)
+  
+  router
+  .route("/api/products/:id")
+  .get(productController.getOneProduct)
+  .patch(productController.editProduct)
+  .delete(productController.deleteProduct);
 
 export const productRouter = router;

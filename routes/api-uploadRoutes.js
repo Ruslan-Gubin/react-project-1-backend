@@ -1,8 +1,9 @@
 import { checkAuth } from "../utils/index.js";
 import Router from 'express';
 import multer from 'multer';
-const router = new Router()
 import fs from 'fs';
+
+const router = new Router()
 
 const storage = multer.diskStorage({
   destination: (_, __, cb) => {

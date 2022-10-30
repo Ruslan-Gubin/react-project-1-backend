@@ -1,109 +1,53 @@
-import {userModel} from "../models/index.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { authService } from "../service/authService.js";
+import {  handleError } from "../utils/index.js";
 
 class AuthController {
   async createUser(req, res) {
-    try {
-      const { fullName, email, avatarUrl, password } = req.body;
-
-      const pas = password;
-      const salt = await bcrypt.genSalt(10);
-      const passwordBcrypt = await bcrypt.hash(pas, salt);
-
-      const newUser = new userModel({
-        fullName,
-        email,
-        avatarUrl,
-        passwordHash: passwordBcrypt,
-      });
-      const user = await newUser.save();
-
-      const token = jwt.sign(
-        {
-          _id: user._id,
-        },
-        "secret123",
-        {
-          expiresIn: "30d",
-        }
+    await authService
+      .create(req)
+      .then((user) => res.status(201).json(user))
+      .catch((error) =>
+        handleError(res, error, "Не удалось создать пользователя")
       );
-
-      const { passwordHash, ...userData } = user._doc;
-
-      res.json({
-        ...userData,
-        token,
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500).send({ message: "Не удалось создать пользователя" });
-    }
   }
 
   async authorization(req, res) {
-    try {
-      const user = await userModel.findOne({ email: req.body.email });
-
-      if (!user) {
-        return res.status(404).json({
-          massage: "Пользователь не найден",
-        });
-      }
-
-      const isValidPass = await bcrypt.compare(
-        req.body.password,
-        user._doc.passwordHash
-      );
-
-      if (!isValidPass) {
-        return res.status(400).json({
-          massage: "Неверный логин или пароль",
-        });
-      }
-
-      const token = jwt.sign(
-        {
-          _id: user._id,
-        },
-        "secret123",
-        {
-          expiresIn: "30d",
-        }
-      );
-
-      const { passwordHash, ...userData } = user._doc;
-
-      res.json({
-        ...userData,
-        token,
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500).send({ message: "Не удалось авторизоватся" });
-    }
+    await authService.login(req,res) 
+    .then((user) => res.status(200).json(user))
+    .catch((error) =>handleError(res, error, "Не удалось авторизоватся"));
   }
 
-  async getInforUsers(req, res) {
-    try {
-      const user = await userModel.findById(req.userId);
+  async getUserInfo(req, res) {
+    await authService
+      .getUser(req)
+      .then((user) => res.status(200).json(user))
+      .catch((error) => handleError(res, error, "Пользователь не найден"));
+  }
 
-      if (!user) {
-        return res.status(404).json({
-          message: "Пользователь не найден",
-        });
-      }
+  async getAllUsers(req, res) {
+    await authService
+      .getAllUsers()
+      .then((users) => res.status(200).json(users))
+      .catch((error) => handleError(res, error, "Пользователь не найден"));
+  }
 
-      const { passwordHash, ...userData } = user._doc;
+  async removeUser(req, res) {
+    await authService
+      .remove(req)
+      .then(() => res.status(200).json(req.params.id))
+      .catch((error) =>
+        handleError(res, error, "Пользователя не удалось удалить")
+      );
+  }
 
-      res.json(userData);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({
-        massage: "Нет доступа",
-      });
-    }
+  async updateUser(req, res) {
+    await authService
+      .update(req)
+      .then(() => res.status(200).json({success: true}))
+      .catch((error) => 
+        handleError(res, error, "Пользователя не удалось изменить")
+      );
   }
 }
 
-export const authController = new AuthController();
+export const authController = new AuthController(); 

@@ -1,4 +1,5 @@
 import { productService } from "../service/index.js";
+import { handleError } from "../utils/index.js";
 
 class ProductController {
   async getProducts(req, res) {
@@ -29,12 +30,9 @@ class ProductController {
   }
 
   async editProduct(req, res) {
-    try {
-      const updatedProduct = await productService.update(req.body);
-      return res.json(updatedProduct);
-    } catch (e) {
-      res.status(500).json(e.message);
-    }
+     await productService.update(req)
+     .then(() => res.status(200).json({succses: true}))
+     .catch((error) =>handleError(res, error, "Не удалось изменить продукт"));  
   }
 
   async addProduct(req, res) {

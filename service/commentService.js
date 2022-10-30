@@ -1,15 +1,18 @@
-import { commentModel } from "../models/comments.js";
+import { commentModel } from "../models/index.js";
 
 class CommentService {
+  constructor(options) {
+    this.model = options.model
+  }
   async create(req) {
     const { text, likes } = req.body;
     const user = req.userId;
-    const newComment = await new commentModel({ text, likes, user }).save();
+    const newComment = await new this.model({ text, likes, user }).save();
     return newComment;
   }
 
   async getAll(limit) {
-    const comment = await commentModel
+    const comment = await this.model
       .find()
       .sort({ createdAt: -1 })
       .limit(limit)
@@ -19,7 +22,7 @@ class CommentService {
   }
 
   async getOne(id) {
-    const comment = await commentModel.findById(id).populate("user");
+    const comment = await this.model.findById(id).populate("user");
     return comment;
   }
 
@@ -27,7 +30,7 @@ class CommentService {
     if (!id) {
       throw new Error("не указан ID");
     }
-    const comment = await commentModel.findByIdAndDelete(id);
+    const comment = await this.model.findByIdAndDelete(id);
     return comment;
   }
 
@@ -38,7 +41,7 @@ class CommentService {
 
     const postId = req.params.id;
 
-    return await commentModel.updateOne(
+    return await this.model.updateOne(
       { _id: postId },
       {
         text: req.body.text,
@@ -48,4 +51,6 @@ class CommentService {
   }
 }
 
-export const commentService = new CommentService();
+export const commentService = new CommentService({
+    model: commentModel
+});

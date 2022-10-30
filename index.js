@@ -1,13 +1,10 @@
 import express from "express";
 import mongoose from "mongoose";
-import chalk from "chalk";
 import cors from "cors";
-import * as routes from "./routes/index.js";
+import { chalks } from "./utils/index.js";
 import * as dotenv from "dotenv";
+import * as routes from "./routes/index.js";
 
-
-const errorNsg = chalk.bgKeyword("white").redBright;
-const successNsg = chalk.bgKeyword("green").white;
 
 const app = express();
 dotenv.config();
@@ -18,18 +15,18 @@ app.use("/uploads", express.static("uploads"));
 (async () => {
   await mongoose
     .connect(process.env.MONGO_URL)
-    .then(() => console.log(successNsg("DB Product ok")))
-    .catch((err) => console.log(errorNsg("DB error", err)));
+    .then(() => console.log(chalks.success("DB Product ok"))) 
+    .catch((err) => console.log(chalks.error("DB error", err)));
 })();
 
 app.use(routes.productRouter);
 app.use(routes.postRouter);
 app.use(routes.authRouter);
 app.use(routes.uploadRouter);
-app.use(routes.commentRouter) 
+app.use(routes.commentRouter); 
 
 app.listen(process.env.PORT || 4444, (error) => {
   error
-    ? console.log(errorNsg(error))
-    : console.log(successNsg(`Listening port ${process.env.PORT || 4444}`));
+    ? console.log(chalks.error(error))
+    : console.log(chalks.success(`Listening port ${process.env.PORT || 4444}`)); 
 });

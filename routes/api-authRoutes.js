@@ -6,10 +6,14 @@ import { registerValedation, loginValedation } from "../validations/authValudati
 
 const router = new Router()
 
-
 router.post("/api/register", registerValedation, handleValidationErrors, authController.createUser);
 router.post("/api/login", loginValedation, handleValidationErrors, authController.authorization);
-router.get("/api/auth", checkAuth, authController.getInforUsers);
+router.get("/api/auth", checkAuth, authController.getUserInfo);
+router.get("/api/auth-all", checkAuth, authController.getAllUsers);
+
+router.route('/api/auth/:id')
+.delete(checkAuth, authController.removeUser)
+.patch(checkAuth,registerValedation,handleValidationErrors, authController.updateUser);
 
 export const authRouter = router;
  
