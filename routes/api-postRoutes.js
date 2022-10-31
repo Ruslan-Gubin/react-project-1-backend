@@ -16,6 +16,7 @@ router.route('/api/post')
 .post( checkAuth, postCreateValedation, handleValidationErrors, postController.createPost);
 
 router.get("/api/tags", postController.getTags); 
+router.get("/api/lenght", postController.getLenght); 
 
 export const postRouter = router;
 

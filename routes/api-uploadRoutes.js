@@ -17,11 +17,11 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({storage})
+const upload = multer({storage}) 
 
 const createUpload = (req, res) => {
-  res.json({url: `/uploads/${req.file.originalname}`,});}
+  res.json({url: `/api/uploads/${req.file.originalname}`,});}
     
-router.post('/api/upload', checkAuth, upload.single('image'), createUpload);
+router.post('/api/uploads', checkAuth, upload.single('image'), createUpload);
 
 export const uploadRouter = router;

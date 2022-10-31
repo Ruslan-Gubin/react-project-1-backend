@@ -1,14 +1,16 @@
 import { postModel } from "../models/index.js";
 
 class PostService {
- 
   constructor(options) {
-    this.model = options.model
-    this.allposts = []
+    this.model = options.model;
   }
 
-async  getAllPost() {
-  return  await this.model.find().sort({ createdAt: -1 }).populate("user").exec();
+  async getAllPost() {
+    return await this.model
+      .find()
+      .sort({ createdAt: -1 })
+      .populate("user")
+      .exec();
   }
 
   async create(req) {
@@ -18,32 +20,30 @@ async  getAllPost() {
   }
 
   async getAll(req) {
-    const views = req.query.views ? req.query.views : false;
-    const search  = req.query.search ? req.query.search.toLowerCase() : '';
-    const tag = req.query.tags ? req.query.tags : false;
+    const category = await req.query.category ? req.query.category : false;
+    const search = await req.query.search ? req.query.search.toLowerCase() : "";
+    const tag = await req.query.tags ? req.query.tags : false;
+    const page = await req.query.page ? req.query.page : null;
+    const perPage = await req.query.perpage ? req.query.perpage : null;
+    const skips = (page -1)  * perPage
 
-   console.log(tag); //3tags
-   console.log(search); //tes
-   console.log(views); // -1
-   
+    const result = await this.model
+      .find(tag ?  {tags:  {$regex: tag}} : null || search ? {title: {$regex: search}} : null )
+      .skip(skips)
+      .limit(perPage)
+      .sort(category == 'popular'  ? { viewsCount: -1 } : { createdAt: -1 })
 
-     
-   
- this.allposts = await this.model.find({$or: [ {tags: tag ? tag : null},{title: search ? search : null}]} ).sort(views ? {viewsCount: views} : {createdAt: -1})
-//  this.allposts = await this.model.find(tag ? {tags: tag} : null || search ? {title: search} : null ).sort(views ? {viewsCount: views} : {createdAt: -1})
-      
-  
-    // const searchText = this.allposts.filter(item => item.title.toLowerCase().includes(search.toLowerCase()))
-    
- 
-    return this.allposts;
-    // return searchText;
+      return result
+  }
+
+  async getLength() {
+    return await this.model.countDocuments()
   }
 
   async searchTags(req) {
-    const tag = req.query.tags
-    const tags = await this.model.find({tags: tag})
-    return tags
+    const tag = req.query.tags;
+    const tags = await this.model.find({ tags: tag });
+    return tags;
   }
 
   async findOne(id) {
@@ -71,19 +71,18 @@ async  getAllPost() {
 
   async update(req) {
     const postId = req.params.id;
-    const post = await this.model.updateOne(
-      { _id: postId },
-      {...req.body}
-      );  
+    const post = await this.model.updateOne({ _id: postId }, { ...req.body });
     return post;
   }
 
   async getTags(req) {
-    const limit = req.query.limit
+    const limit = req.query.limit;
     const result = [];
     const filterTags = [];
 
-    const arrayTags = await this.model.find({},{tags: true, _id: false}).sort({createdAt: -1})
+    const arrayTags = await this.model
+      .find({}, { tags: true, _id: false })
+      .sort({ createdAt: -1 });
 
     const tags = arrayTags.map((obj) => obj.tags.join("").trim().split(" "));
 
@@ -92,17 +91,17 @@ async  getAllPost() {
     const setTags = new Set(filterTags);
 
     for (const key of setTags) {
-      if (key) {  
+      if (key) {
         result.push(key);
       }
-    }  
+    }
+    
     if (limit) {
-      return result.splice(0, limit)
+      return result.splice(0, limit);
     } else {
       return result;
     }
   }
-  
 }
 
-export const postService = new PostService({model: postModel});
+export const postService = new PostService({ model: postModel });

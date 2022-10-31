@@ -15,6 +15,13 @@ class PostController {
       .catch((error) => handleError(res, error, "Не удалось найти статьи"));
   }
 
+  async getLenght(req, res) {
+    await postService
+      .getLength()
+      .then((length) => res.status(200).json(length))
+      .catch((error) => handleError(res, error, "Не удалось найти длину данных"));
+  }
+
   async getOnePost(req, res) {
     await postService
       .findOne(req.params.id)
