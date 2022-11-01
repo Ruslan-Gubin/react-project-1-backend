@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 });
  
 const upload = multer({storage}) 
-//sdafl;kjasdfkj
+
 const createUpload = (req, res) => {
   res.json({url: `/uploads/${req.file.originalname}`,});}
     
