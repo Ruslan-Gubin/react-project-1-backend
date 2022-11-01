@@ -18,7 +18,7 @@ class PostService {
     const newPost = await new this.model({ ...req.body, user }).save();
     return newPost;
   }
-
+ 
   async getAll(req) {
     const category = await req.query.category ? req.query.category : false;
     const search = await req.query.search ? req.query.search.toLowerCase() : "";
@@ -95,7 +95,7 @@ class PostService {
         result.push(key);
       }
     }
-    
+
     if (limit) {
       return result.splice(0, limit);
     } else {

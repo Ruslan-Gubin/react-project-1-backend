@@ -8,8 +8,8 @@ constructor(options) {
   this.model = options.model
 }
 
-  getToken() {
-   return jwt.sign({ _id: user._id }, process.env.SECRET_TOKEN, {
+  getToken(id) {
+  return  jwt.sign({ _id: id }, process.env.SECRET_TOKEN, {
      expiresIn: "30d",
    });
   };
@@ -25,7 +25,7 @@ constructor(options) {
     });
     const user = await newUser.save();
 
-    const token = this.getToken;
+    const token = this.getToken(user._id);
 
     const { passwordHash, ...userData } = user._doc;
 
@@ -51,7 +51,7 @@ constructor(options) {
       throw new Error("Неверный логин или пароль");
     }
 
-    const token = this.getToken;
+    const token = this.getToken(user._id);
 
     const { passwordHash, ...userData } = user._doc;
 
@@ -94,7 +94,7 @@ constructor(options) {
       }
     );
 
-    const token = this.getToken;
+    const token = this.getToken(userUpdate._id);
 
     const { passwordHash, ...userData } = userUpdate._doc;
 
