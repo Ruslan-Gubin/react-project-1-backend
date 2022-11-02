@@ -23,7 +23,16 @@ const postSchema = new Schema({
     ref: 'User',
     required: true,
   },
-  imageUrl : String,
+  image: {
+    public_id:{
+      type: String,
+      required: true
+    },
+    url: {
+      type: String,
+      required: true
+    }
+  }
 },
 { timestamps: true },
 );

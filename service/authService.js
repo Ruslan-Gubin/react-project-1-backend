@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { userModel } from "../models/index.js";
+import { cloudinary } from "../utils/cloudinary.js";
 
 
 class AuthService {
@@ -18,11 +19,18 @@ constructor(options) {
     const pas = req.body.password;
     const salt = await bcrypt.genSalt(10);
     const passwordBcrypt = await bcrypt.hash(pas, salt);
+    
+    const image =  req.body.image
+    const resImage = await cloudinary.uploader.upload(image, {
+      folder: 'Users',
+    }); 
 
-    const newUser = new userModel({
+    const newUser = await this.model({
       ...req.body,
+      image: {public_id: resImage.public_id, url: resImage.secure_url},
       passwordHash: passwordBcrypt,
     });
+ 
     const user = await newUser.save();
 
     const token = this.getToken(user._id);

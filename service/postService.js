@@ -1,4 +1,5 @@
 import { postModel } from "../models/index.js";
+import { cloudinary } from "../utils/cloudinary.js";
 
 class PostService {
   constructor(options) {
@@ -11,33 +12,53 @@ class PostService {
       .sort({ createdAt: -1 })
       .populate("user")
       .exec();
-  }
+  } 
 
   async create(req) {
-    const user = req.userId;
-    const newPost = await new this.model({ ...req.body, user }).save();
+    const image = req.body.image;
+    const user = req.userId; 
+
+    const result = await cloudinary.uploader.upload(image, {
+      folder: "Posts",
+    });
+
+    const newPost = await this.model({ 
+      ...req.body, 
+      user,
+      image: { public_id: result.public_id, url: result.secure_url },
+    }).save();
+
     return newPost;
   }
- 
+
   async getAll(req) {
-    const category = await req.query.category ? req.query.category : false;
-    const search = await req.query.search ? req.query.search.toLowerCase() : "";
-    const tag = await req.query.tags ? req.query.tags : false;
-    const page = await req.query.page ? req.query.page : null;
-    const perPage = await req.query.perpage ? req.query.perpage : null;
-    const skips = (page -1)  * perPage
+    const category = (await req.query.category) ? req.query.category : false;
+    const search = (await req.query.search)
+      ? req.query.search.toLowerCase()
+      : "";
+    const tag = (await req.query.tags) ? req.query.tags : false;
+    const page = (await req.query.page) ? req.query.page : null;
+    const perPage = (await req.query.perpage) ? req.query.perpage : null;
+    const skips = (page - 1) * perPage;
 
     const result = await this.model
-      .find(tag ?  {tags:  {$regex: tag}} : null || search ? {title: {$regex: search}} : null )
+      .find(
+        tag
+          ? { tags: { $regex: tag } }
+          : null || search
+          ? { title: { $regex: search } }
+          : null
+      )
       .skip(skips)
       .limit(perPage)
-      .sort(category == 'popular'  ? { viewsCount: -1 } : { createdAt: -1 })
+      .sort(category == "popular" ? { viewsCount: -1 } : { createdAt: -1 })
+      .populate('user')
 
-      return result
+    return result;
   }
 
   async getLength() {
-    return await this.model.countDocuments()
+    return await this.model.countDocuments();
   }
 
   async searchTags(req) {
@@ -49,34 +70,54 @@ class PostService {
   async findOne(id) {
     if (!id) {
       throw new Error("Не найден ID");
-    }
+    } 
 
     const post = await this.model
       .findOneAndUpdate(
         { _id: id },
         { $inc: { viewsCount: 1 } },
         { returnDocument: "after" }
-      )
+      ) 
       .populate("user");
     return post;
-  }
+  } 
+ 
+  async remove(req) {
+    try {
+      const post = await this.model.findByIdAndDelete(req.params.id);
+      const imgId = post.image.public_id;   ///Posts/ixe9reywr3vtapa0fp1d  public_id
+      await cloudinary.uploader.destroy(imgId);  // delete image cloudinary 
 
-  async remove(id) {
-    if (!id) {
-      throw new Error("не указан ID");
+      return ({success: true, message: 'Post deleted'});
+    } catch (error) {
+      console.log(error)
     }
-    const post = await this.model.findByIdAndDelete(id);
-    return post;
   }
 
-  async update(req) {
+  async update(req) { 
     const postId = req.params.id;
-    const post = await this.model.updateOne({ _id: postId }, { ...req.body });
-    return post;
+    const prevPost = await this.model.findById(postId)
+    const prevImage = await prevPost.image
+    
+    if (prevImage.url === req.body.image) { 
+      return await this.model.updateOne({ _id: postId }, { ...req.body, image: prevImage});
+    } else  {
+      const imgId = await prevPost.image.public_id;  
+      await cloudinary.uploader.destroy(imgId) 
+
+      const newImage = await req.body.image;
+      const result = await cloudinary.uploader.upload(newImage, { 
+        folder: "Posts",
+        fetch_format: "auto",
+      });
+
+      return await this.model.updateOne({ _id: postId }, { ...req.body, image: { public_id: result.public_id, url: result.secure_url },  });
+    }
+
   }
 
   async getTags(req) {
-    const limit = req.query.limit;
+    const limit = req.query.limit;  
     const result = [];
     const filterTags = [];
 

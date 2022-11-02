@@ -24,4 +24,4 @@ const createUpload = (req, res) => {
     
 router.post('/api/uploads', checkAuth, upload.single('image'), createUpload);
 
-export const uploadRouter = router;     
+export const uploadRouter = router; 

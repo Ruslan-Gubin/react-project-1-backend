@@ -31,8 +31,8 @@ class PostController {
 
   async deletePost(req, res) {
     await postService
-      .remove(req.params.id)
-      .then(() => res.status(200).json(req.params.id))
+      .remove(req)
+      .then(() => res.status(200).json({id:req.params.id, success: true}))
       .catch((error) => handleError(res, error, "Не удалось удалить статью"));
   }
 

@@ -15,7 +15,16 @@ const UserShema = new mongoose.Schema(
       type: String,
       require: true,
     },
-    avatarUrl: String, 
+    image: {
+      public_id: {
+        type: String,
+        require: true, 
+      },
+      url: {
+        type: String,
+        require: true, 
+      }
+    }, 
   },
   { timestamps: true }// дата создания
 );

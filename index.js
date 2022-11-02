@@ -9,8 +9,7 @@ import * as routes from "./routes/index.js";
 const app = express();
 dotenv.config();
 app.use(cors());
-app.use(express.json());
-app.use("/uploads", express.static("uploads"));
+app.use(express.json({limit: '50mb'}));  
 
 (async () => {
   await mongoose
@@ -22,7 +21,6 @@ app.use("/uploads", express.static("uploads"));
 app.use(routes.productRouter);
 app.use(routes.postRouter);
 app.use(routes.authRouter);
-app.use(routes.uploadRouter);
 app.use(routes.commentRouter); 
 
 app.listen(process.env.PORT || 4444, (error) => {
