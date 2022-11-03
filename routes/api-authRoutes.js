@@ -12,8 +12,9 @@ router.get("/api/auth", checkAuth, authController.getUserInfo);
 router.get("/api/auth-all", checkAuth, authController.getAllUsers);
 
 router.route('/api/auth/:id')
-.delete(checkAuth, authController.removeUser)
-.patch(checkAuth,registerValedation,handleValidationErrors, authController.updateUser);
+.delete(checkAuth, authController.removeUser);
+
+router.patch('/api/auth-update', checkAuth,registerValedation,handleValidationErrors, authController.updateUser);
 
 export const authRouter = router;
  

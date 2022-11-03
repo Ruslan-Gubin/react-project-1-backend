@@ -3,34 +3,33 @@ import bcrypt from "bcrypt";
 import { userModel } from "../models/index.js";
 import { cloudinary } from "../utils/cloudinary.js";
 
-
 class AuthService {
-constructor(options) {
-  this.model = options.model
-}
+  constructor(options) {
+    this.model = options.model;
+  }
 
   getToken(id) {
-  return  jwt.sign({ _id: id }, process.env.SECRET_TOKEN, {
-     expiresIn: "30d",
-   });
-  };
+    return jwt.sign({ _id: id }, process.env.SECRET_TOKEN, {
+      expiresIn: "30d",
+    });
+  }
 
   async create(req) {
     const pas = req.body.password;
     const salt = await bcrypt.genSalt(10);
     const passwordBcrypt = await bcrypt.hash(pas, salt);
-    
-    const image =  req.body.image
+
+    const image = req.body.image;
     const resImage = await cloudinary.uploader.upload(image, {
-      folder: 'Users',
-    }); 
+      folder: "Users",
+    });
 
     const newUser = await this.model({
       ...req.body,
-      image: {public_id: resImage.public_id, url: resImage.secure_url},
+      image: { public_id: resImage.public_id, url: resImage.secure_url },
       passwordHash: passwordBcrypt,
     });
- 
+
     const user = await newUser.save();
 
     const token = this.getToken(user._id);
@@ -71,7 +70,7 @@ constructor(options) {
       throw new Error("Пользователь не найден");
     }
 
-    const user = await userModel.findById(req.userId);
+    const user = await this.model.findById(req.userId);
 
     const { passwordHash, ...userData } = user._doc;
 
@@ -79,7 +78,7 @@ constructor(options) {
   }
 
   async getAllUsers() {
-    const users = await userModel.find().sort({createdAt: -1});
+    const users = await userModel.find().sort({ createdAt: -1 });
     return users;
   }
 
@@ -88,26 +87,39 @@ constructor(options) {
   }
 
   async update(req) {
+    const idAuth = req.body.id;
     const pas = req.body.password;
     const salt = await bcrypt.genSalt(7);
     const passwordBcrypt = await bcrypt.hash(pas, salt);
 
-    const userUpdate = await userModel.findByIdAndUpdate(
-      { _id: req.params.id },
-      {
-        email: req.body.email,
-        passwordHash: passwordBcrypt,
-        fullName: req.body.fullName,
-        avatarUrl: req.body.avatarUrl,
-      }
-    );
+    const prevAuth = await this.model.findOne({ _id: idAuth });
+    const prevImage = await prevAuth.image; //find prev image user
 
-    const token = this.getToken(userUpdate._id);
+    if (prevImage.url === req.body.prevImage) {
+      return await this.model.updateOne(
+        { _id: idAuth },
+        { ...req.body, passwordHash: passwordBcrypt, image: prevImage }
+      );
+    } else {
+      const imgId = await prevAuth.image.public_id;
+      await cloudinary.uploader.destroy(imgId); // remove prev avatar
 
-    const { passwordHash, ...userData } = userUpdate._doc;
+      const newAvatar = await req.body.image;
+      const result = await cloudinary.uploader.upload(newAvatar, {
+        folder: "Users",
+        fetch_format: "auto",
+      });
 
-    return { ...userData, token };
+      return await this.model.updateOne(
+        { _id: idAuth },
+        {
+          ...req.body,
+          passwordHash: passwordBcrypt,
+          image: { public_id: result.public_id, url: result.secure_url },
+        }
+      );
+    }
   }
 }
 
-export const authService = new AuthService({model: userModel});
+export const authService = new AuthService({ model: userModel });
