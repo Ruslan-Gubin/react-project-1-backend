@@ -34,16 +34,22 @@ class AuthController {
   async removeUser(req, res) {
     await authService
       .remove(req)
-      .then(() => res.status(200).json(req.params.id))
+      .then((data) => res.status(200).json({...data}))
       .catch((error) =>
         handleError(res, error, "Пользователя не удалось удалить")
       );
   }
 
+  async getEmails(req, res) {
+    await authService.getAllEmail()
+    .then((data) => res.status(200).json(data))
+    .catch((error) => handleError(res, error, "Не удалось найти все Email")); 
+  }
+
   async updateUser(req, res) {
     await authService
       .update(req)
-      .then(() => res.status(200).json({success: true}))
+      .then(() => res.status(200).json({success: true, ...req.body}))
       .catch((error) => 
         handleError(res, error, "Пользователя не удалось изменить")
       );

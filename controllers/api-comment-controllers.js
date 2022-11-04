@@ -1,22 +1,24 @@
 import { commentService } from "../service/index.js";
 import { handleError } from "../utils/index.js";
 
-class CommentController {
+
+
+class CommentController  {
+
   async create(req, res) {
     await commentService
       .create(req)
-      .then((comments) => res.status(201).json(comments))
+      .then((comments) => res.status(201).json(comments)) 
       .catch((error) =>
-        handleError(res, error, "Ну удалось добавить комментарий")
+        handleError(res, error, "Ну удалось добавить комментарий") 
       );
-  }
+  }  
 
   async getAll(req, res) {
-    await commentService
-      .getAll(req.params.limit)
+    await commentService.getAll(req.params.limit)
       .then((comments) => res.status(200).json(comments))
       .catch((error) =>
-        handleError(res, error, "Ну удалось получить все комментарии")
+        handleError(res, error, "Ну удалось получить все комментарии") 
       );
   }
 
@@ -25,7 +27,7 @@ class CommentController {
       .getOne(req.params.id)
       .then((comment) => res.status(200).json(comment))
       .catch((error) =>
-        handleError(res, error, "Ну удалось получить комментарий")
+        handleError(res, error, "Ну удалось получить комментарий") 
       );
   }
 

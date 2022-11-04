@@ -11,11 +11,11 @@ router.post("/api/login", loginValedation, handleValidationErrors, authControlle
 router.get("/api/auth", checkAuth, authController.getUserInfo);
 router.get("/api/auth-all", checkAuth, authController.getAllUsers);
 
-router.route('/api/auth/:id')
+router.route('/api/auth-remove')
 .delete(checkAuth, authController.removeUser);
 
 router.patch('/api/auth-update', checkAuth,registerValedation,handleValidationErrors, authController.updateUser);
-
+router.get('/api/auths-email', authController.getEmails)
 export const authRouter = router;
  
  

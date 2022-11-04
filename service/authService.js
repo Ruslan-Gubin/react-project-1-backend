@@ -43,7 +43,7 @@ class AuthService {
     if (!req.body.email) {
       throw new Error("Не найден E-Mail пользователя");
     }
-    const user = await userModel.findOne({ email: req.body.email });
+    const user = await this.model.findOne({ email: req.body.email });
 
     if (!user) {
       throw new Error("Неверный логин или пароль");
@@ -78,12 +78,30 @@ class AuthService {
   }
 
   async getAllUsers() {
-    const users = await userModel.find().sort({ createdAt: -1 });
+    const users = await this.model.find().sort({ createdAt: -1 });
     return users;
   }
 
   async remove(req) {
-    return await userModel.findByIdAndDelete(req.params.id);
+    try {
+      const idAuth = req.query.id
+      const auth = await this.model.findByIdAndDelete(idAuth)
+
+      const imageId = auth.image.public_id
+      await cloudinary.uploader.destroy(imageId)
+
+      return ({success: true, message: 'user deleted'})
+
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  async getAllEmail() {
+    const result = []
+    const emails = await this.model.find({},{email: true,_id: false})
+    emails.forEach(item => result.push(item.email))
+    return result
   }
 
   async update(req) {
@@ -95,12 +113,12 @@ class AuthService {
     const prevAuth = await this.model.findOne({ _id: idAuth });
     const prevImage = await prevAuth.image; //find prev image user
 
-    if (prevImage.url === req.body.prevImage) {
+    if (req.body.image === req.body.prevImage) {
       return await this.model.updateOne(
         { _id: idAuth },
         { ...req.body, passwordHash: passwordBcrypt, image: prevImage }
       );
-    } else {
+    } else if (prevImage.url !== req.body.image) {
       const imgId = await prevAuth.image.public_id;
       await cloudinary.uploader.destroy(imgId); // remove prev avatar
 
@@ -118,6 +136,7 @@ class AuthService {
           image: { public_id: result.public_id, url: result.secure_url },
         }
       );
+     
     }
   }
 }
