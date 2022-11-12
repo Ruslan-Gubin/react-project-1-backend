@@ -35,19 +35,20 @@ class CommentService {
   }
 
   async update(req) {
-    if (!req.params.id) {
+    const id = req.query.id
+    const updateText = req.body.text
+    if (!id) {
       throw new Error("не указан ID");
     }
 
-    const postId = req.params.id;
-
     return await this.model.updateOne(
-      { _id: postId },
+      { _id: id },
       {
-        text: req.body.text,
+        text: updateText,
         user: req.userId,
       }
     );
+
   }
 }
 

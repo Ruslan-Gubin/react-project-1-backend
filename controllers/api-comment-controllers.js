@@ -1,8 +1,6 @@
 import { commentService } from "../service/index.js";
 import { handleError } from "../utils/index.js";
 
-
-
 class CommentController  {
 
   async create(req, res) {
@@ -33,8 +31,8 @@ class CommentController  {
 
   async remove(req, res) {
     await commentService
-      .remove(req.params.id)
-      .then(() => res.status(200).json(req.params.id))
+      .remove(req.query.id)
+      .then(() => res.status(200).json({success: true}))
       .catch((error) =>
         handleError(res, error, "Не удалось удалить комментарий")
       );
@@ -43,7 +41,7 @@ class CommentController  {
   async update(req, res) {
     await commentService
       .update(req)
-      .then(() => res.status(200).json({ success: true }))
+      .then((comments) => res.status(200).json(comments))
       .catch((error) =>
         handleError(res, error, "Не удалось обновить комментарий")
       );
