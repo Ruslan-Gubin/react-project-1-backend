@@ -77,9 +77,19 @@ class AuthService {
     return userData;
   }
 
-  async getAllUsers() {
+  async getAllUsers(req) {
     const users = await this.model.find().sort({ createdAt: -1 });
     return users;
+  }
+
+  async getUsersLikes(req) { 
+    const usersId = await req.query.usersIdArr // req - string 'id,id,id'
+    if (!usersId) {
+      throw new Error('запашиваемые пользователи не найдены')
+    }
+    const userArrId = usersId.split(',')
+    const users = await this.model.find({'_id':{$in : userArrId}},{image: true})
+    return users;  
   }
 
   async remove(req) {

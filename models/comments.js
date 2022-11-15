@@ -7,8 +7,12 @@ const commentSchema = new Schema({
     required: true,
   },
   likes: {
-    type: Number,
-    default: 0,
+    type: Array,
+    default: [],
+  },
+  dislikes: {
+    type: Array,
+    default: [],
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

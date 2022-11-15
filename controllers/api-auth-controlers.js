@@ -26,9 +26,16 @@ class AuthController {
 
   async getAllUsers(req, res) {
     await authService
-      .getAllUsers()
+      .getAllUsers(req)
       .then((users) => res.status(200).json(users))
       .catch((error) => handleError(res, error, "Пользователь не найден"));
+  }
+
+  async getUsersLikes(req, res) {
+    await authService
+      .getUsersLikes(req)
+      .then((users) => res.status(200).json(users))
+      .catch((error) => handleError(res, error.message, "Пользователи не найдены"));
   }
 
   async removeUser(req, res) {

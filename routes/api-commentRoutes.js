@@ -13,7 +13,9 @@ router.route('/api/comments')
 router.route('/api/comments/:id')
 .get(commentController.getOne)
 router.patch('/api/comment-update',checkAuth, commentValedation, handleValidationErrors,commentController.update);
-router.delete('/api/comments-remove', checkAuth, commentController.remove)
+router.patch('/api/comment-like', checkAuth, commentController.setAddLike);
+router.patch('/api/comment-dislike', checkAuth, commentController.setAddDislaik); 
+router.delete('/api/comments-remove', checkAuth, commentController.remove);
 
 
-export const commentRouter = router;
+export const commentRouter = router; 

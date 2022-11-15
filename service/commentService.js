@@ -4,6 +4,7 @@ class CommentService {
   constructor(options) {
     this.model = options.model
   }
+
   async create(req) {
     const { text, likes } = req.body;
     const user = req.userId;
@@ -40,7 +41,6 @@ class CommentService {
     if (!id) {
       throw new Error("не указан ID");
     }
-
     return await this.model.updateOne(
       { _id: id },
       {
@@ -48,8 +48,61 @@ class CommentService {
         user: req.userId,
       }
     );
-
   }
+
+  async addLike(req) {
+    const id = await req.body._id
+    const likesArr = await req.body.likes
+    const user = await req.userId;
+    
+    if (!id) {
+      throw new Error('Не найден ID комментария')
+    } 
+    
+    if (likesArr.includes(user)) {
+      const comment = await this.model.findOneAndUpdate(
+        {_id: id},
+        { likes: likesArr.filter(users => users !== user) },
+        { returnDocument: "after" }
+        )
+        return comment
+    } else {
+      const comment = await this.model.findOneAndUpdate(
+        {_id: id},
+        { likes: [...likesArr,  user] },
+        { returnDocument: "after" }
+        )
+        
+        return comment
+      }
+      }
+
+  async addDislaik(req) {
+    const id = await req.body._id
+    const disLikesArr = await req.body.dislikes
+    const user = await req.userId;
+
+    if (!id) {
+      throw new Error('Не найден ID комментария')
+    } 
+    
+    if (disLikesArr.includes(user)) {
+      const comment = await this.model.findOneAndUpdate(
+        {_id: id},
+        { dislikes: disLikesArr.filter(users => users !== user) },
+        { returnDocument: "after" }
+        )
+        return comment
+    } else {
+      const comment = await this.model.findOneAndUpdate(
+        {_id: id},
+        { dislikes: [...disLikesArr,  user] },
+        { returnDocument: "after" }
+        )
+        return comment
+      }
+      }
+
 }
 
 export const commentService = new CommentService({

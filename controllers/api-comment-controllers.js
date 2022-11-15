@@ -46,6 +46,25 @@ class CommentController  {
         handleError(res, error, "Не удалось обновить комментарий")
       );
   }
+
+  async setAddLike(req, res) {
+    await commentService
+      .addLike(req)
+      .then(() => res.status(201).json({success: true}))
+      .catch((error) =>
+        handleError(res,"Не удалось поставить лайк", error.message)
+      );
+  }
+
+  async setAddDislaik(req, res) {
+    await commentService
+      .addDislaik(req)
+      .then(() => res.status(201).json({success: true}))
+      .catch((error) =>
+        handleError(res,"Не удалось поставить дизлайк", error.message)
+      );
+  }
+
 }
 
-export const commentController = new CommentController();
+export const commentController = new CommentController();  
