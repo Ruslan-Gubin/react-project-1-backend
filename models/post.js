@@ -6,6 +6,10 @@ const postSchema = new Schema({
     type: String,
     required: true,
   },
+  comments: {
+    type: Array,
+    default: [],
+  },
   text: {
     type: String,
     required: true,

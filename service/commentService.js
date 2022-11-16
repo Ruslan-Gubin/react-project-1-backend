@@ -12,14 +12,14 @@ class CommentService {
     return newComment;
   }
 
-  async getAll(limit) {
-    const comment = await this.model
-      .find()
-      .sort({ createdAt: -1 })
-      .limit(limit)
-      .populate("user")
-      .exec();
-    return comment;
+  async getAll(req) {
+    const arrComments = await req.query.body.split(',')
+    if (!arrComments) {
+      throw new Error('Данные по запросу комментариев не найдены')
+    } else {
+      return await this.model.find({_id: arrComments}).sort({ createdAt: -1 }).populate("user").exec();
+    }
+
   }
 
   async getOne(id) {
@@ -33,6 +33,13 @@ class CommentService {
     }
     const comment = await this.model.findByIdAndDelete(id);
     return comment;
+  }
+
+  async removeCommentsForTarget(arr) {
+    if (!arr) {
+      throw new Error('Комментарии не найдены')
+    }
+    return await this.model.deleteMany({_id: arr})
   }
 
   async update(req) {
