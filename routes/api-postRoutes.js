@@ -17,9 +17,13 @@ router.route('/api/post')
 .post( checkAuth, postCreateValedation, handleValidationErrors, postController.createPost);
 
 router.get("/api/tags", postController.getTags); 
+router.get("/api/user-posts", postController.getUserPosts); 
 router.get("/api/lenght", postController.getLenght); 
+router.get("/api/user-post-length", postController.getUserPostsLength); 
 router.patch("/api/post-add-comment", checkAuth, postController.setAddComment);
 router.patch("/api/post-remove-comment", checkAuth, postController.setRemoveComment);
+router.patch("/api/post-set-like", checkAuth, postController.setUpdateLikes);
+router.patch("/api/post-set-dislike", checkAuth, postController.setUpdateDislike);
 
 export const postRouter = router;
 

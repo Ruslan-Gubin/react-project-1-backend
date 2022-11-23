@@ -6,9 +6,10 @@ class CommentService {
   }
 
   async create(req) {
+    const target = req.body.target
     const { text, likes } = req.body;
     const user = req.userId;
-    const newComment = await new this.model({ text, likes, user }).save();
+    const newComment = await new this.model({ text, likes, user, target }).save();
     return newComment;
   }
 
@@ -19,10 +20,18 @@ class CommentService {
     } else {
       return await this.model.find({_id: arrComments}).sort({ createdAt: -1 }).populate("user").exec();
     }
-
   }
 
-  async getOne(id) {
+  async getUserComments(req) {  
+    const userId = req.query.userId
+    const limit = req.query.limit
+    if (!userId) {
+      throw new Error('Не указан ID пользователя')
+    }
+    return await this.model.find({user: {_id: userId}}).limit(limit).sort({ createdAt: -1 }).populate("user").exec() 
+  }
+
+  async getOne(id) { 
     const comment = await this.model.findById(id).populate("user");
     return comment;
   }

@@ -28,12 +28,26 @@ class AuthController {
     await authService
       .getAllUsers(req)
       .then((users) => res.status(200).json(users))
+      .catch((error) => handleError(res, error, "Пользователи не найдены"));
+  }
+
+  async getUserSinglPage(req, res) {
+    await authService
+      .getUserSinglPage(req)
+      .then((users) => res.status(200).json(users))
       .catch((error) => handleError(res, error, "Пользователь не найден"));
   }
 
   async getUsersLikes(req, res) {
     await authService
       .getUsersLikes(req)
+      .then((users) => res.status(200).json(users))
+      .catch((error) => handleError(res, error.message, "Пользователи не найдены"));
+  }
+
+  async getUsersArray(req, res) {
+    await authService
+      .getUsersArray(req)
       .then((users) => res.status(200).json(users))
       .catch((error) => handleError(res, error.message, "Пользователи не найдены"));
   }
@@ -59,6 +73,60 @@ class AuthController {
       .then(() => res.status(200).json({success: true, ...req.body}))
       .catch((error) => 
         handleError(res, error, "Пользователя не удалось изменить")
+      );
+  }
+
+  async setRemoveFriendRequest(req, res) {
+    await authService
+      .setRemoveFriendRequest(req)
+      .then(() => res.status(200).json({success: true}))
+      .catch((error) => 
+        handleError(res, error, "Пользователя не удалось удалить из запросов в друзья")
+      );
+  }
+
+  async setAddFriend(req, res) {
+    await authService
+      .setAddFriend(req)
+      .then(() => res.status(200).json({success: true}))
+      .catch((error) => 
+        handleError(res, error, "Пользователя не удалось добавить в друзья")
+      );
+  }
+
+  async setDeleteFriend(req, res) {
+    await authService
+      .setDeleteFriend(req)
+      .then(() => res.status(200).json({success: true}))
+      .catch((error) => 
+        handleError(res, error, "Пользователя не удалось удалить из друзей")
+      );
+  }
+
+  async setAddDialog(req, res) {
+    await authService
+      .setAddDialog(req)
+      .then(() => res.status(200).json({success: true}))
+      .catch((error) => 
+        handleError(res, error, "Пользователю не удалось добавить диалог")
+      );
+  }
+
+  async setAuthOnline(req, res) {
+    await authService
+      .setAuthOnline(req)
+      .then((status) => res.status(200).json({status}))
+      .catch((error) => 
+        handleError(res, error, "Не удалось передать статус активности")
+      );
+  }
+
+  async setFriendRequest(req, res) {
+    await authService
+      .setFriendRequest(req)
+      .then(() => res.status(200).json({success: true}))
+      .catch((error) => 
+        handleError(res, error, "Пользователя не удалось добавить в массив запрос друзей")
       );
   }
 }

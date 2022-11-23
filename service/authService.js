@@ -77,41 +77,172 @@ class AuthService {
     return userData;
   }
 
+  async getUserSinglPage(req) {
+    const id = req.params.id;
+    if (!id) {
+      throw new Error("Пользователь не найден");
+    }
+
+    const user = await this.model.findById(id);
+
+    const { passwordHash, ...userData } = user._doc;
+
+    return userData;
+  }
+
   async getAllUsers(req) {
     const users = await this.model.find().sort({ createdAt: -1 });
     return users;
   }
 
-  async getUsersLikes(req) { 
-    const usersId = await req.query.usersIdArr // req - string 'id,id,id'
-    if (!usersId) {
-      throw new Error('запашиваемые пользователи не найдены')
+  async setFriendRequest(req) {
+    if (req.body.targerId && req.body.guest) {
+      throw new Error("Не указан ID гостя или пользователя");
     }
-    const userArrId = usersId.split(',')
-    const users = await this.model.find({'_id':{$in : userArrId}},{image: true})
-    return users;  
+    const userId = req.body.user._id;
+    const requestFriendsArr = req.body.user.requestFriends;
+    const guestId = req.body.guest;
+
+    if (requestFriendsArr.includes(guestId)) {
+      const user = await this.model.findOneAndUpdate(
+        { _id: userId },
+        {
+          requestFriends: requestFriendsArr.filter((item) => item !== guestId),
+        },
+        { returnDocument: "after" }
+      );
+      return user;
+    } else {
+      const user = await this.model.findOneAndUpdate(
+        { _id: userId },
+        { requestFriends: [...requestFriendsArr, guestId] },
+        { returnDocument: "after" }
+      );
+      return user;
+    }
+  }
+
+  async setRemoveFriendRequest(req) {
+    const userId = req.body.userId;
+    const removeId = req.body.removeId;
+    const usersArrId = req.body.usersArrId;
+
+    return await this.model.findOneAndUpdate(
+      { _id: userId },
+      { requestFriends: usersArrId.filter((item) => item !== removeId) },
+      { returnDocument: "after" }
+    );
+  }
+
+  async setAddFriend(req) {
+    const userId = req.body.userId;
+    const targetId = req.body.targetId;
+
+    await this.model.updateOne(
+      { _id: userId },
+      { $addToSet: { friends: targetId },$pull: {requestFriends: targetId}  },
+      );
+      await this.model.updateOne(
+        { _id: targetId },
+        { $addToSet: { friends: userId },$pull: {requestFriends: userId} },
+        );
+  }
+
+  async setAddDialog(req) {
+    const userOneId = req.body.userOneId
+    const userTwoId = req.body.userTwoId
+    const dialogId = req.body.dialogId  
+
+    await this.model.updateOne(
+      { _id: userOneId },
+      { $addToSet: { dialogs: dialogId }  },
+      { returnDocument: "after" }
+      );
+      await this.model.updateOne(
+        { _id: userTwoId },
+        { $addToSet: { dialogs: dialogId } },
+        { returnDocument: "after" }
+        );
+  }
+
+  async setDeleteFriend(req) {
+    if (!req.body.userId && !req.body.guest) {
+      throw new Error('Не указан ID пользователя или гостя')
+    }
+    
+    const userId = req.body.userId
+    const guestId = req.body.guest
+
+
+    await this.model.updateOne(
+      { _id: userId },
+      { $pull: {friends: guestId}  },
+      );
+      await this.model.updateOne(
+        { _id: guestId },
+        { $pull: {friends: userId} },
+        );
+  }
+
+  async setAuthOnline(req) { 
+    const status = req.body.status
+    console.log(status);
+    if (status !== false && status !== true) {
+      throw new Error('Не удалось получить статус пользователя')
+    }
+     await this.model.updateOne(    
+      {_id: req.userId},
+      {$set: {online: status}}
+      )
+      return status
+  }
+
+  async getUsersLikes(req) {
+    const usersId = await req.query.usersIdArr; // req - string 'id,id,id'
+    if (!usersId) {
+      throw new Error("запашиваемые пользователи не найдены");
+    }
+    const userArrId = usersId.split(",");
+    const users = await this.model.find(
+      { _id: { $in: userArrId } },
+      { image: true }
+    );
+    return users;
+  }
+
+  async getUsersArray(req) {
+    const limit = req.query.limit
+    const usersId = await req.query.arr; // req - string 'id,id,id'
+    if (!usersId) {
+      throw new Error("запашиваемые пользователи не найдены");
+    }
+    const userArrId = usersId.split(",");
+    const users = await this.model.find(
+      { _id: { $in: userArrId } },
+      { image: true, fullName: true }
+    ).limit(limit);
+    return users;
   }
 
   async remove(req) {
     try {
-      const idAuth = req.query.id
-      const auth = await this.model.findByIdAndDelete(idAuth)
+      const idAuth = req.query.id;
+      const auth = await this.model.findByIdAndDelete(idAuth);
 
-      const imageId = auth.image.public_id
-      await cloudinary.uploader.destroy(imageId)
+      const imageId = auth.image.public_id;
+      await cloudinary.uploader.destroy(imageId);
 
-      return ({success: true, message: 'user deleted'})
-
+      return { success: true, message: "user deleted" };
     } catch (error) {
       console.log(error.message);
     }
   }
 
   async getAllEmail() {
-    const result = []
-    const emails = await this.model.find({},{email: true,_id: false})
-    emails.forEach(item => result.push(item.email))
-    return result
+    const result = [];
+    const emails = await this.model.find({}, { email: true, _id: false });
+    emails.forEach((item) => result.push(item.email));
+    return result;
   }
 
   async update(req) {
@@ -146,7 +277,6 @@ class AuthService {
           image: { public_id: result.public_id, url: result.secure_url },
         }
       );
-     
     }
   }
 }

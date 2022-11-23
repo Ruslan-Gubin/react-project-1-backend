@@ -22,6 +22,7 @@ app.use(routes.productRouter);
 app.use(routes.postRouter);
 app.use(routes.authRouter);
 app.use(routes.commentRouter); 
+app.use(routes.dialogRouter); 
 
 app.listen(process.env.PORT || 4444, (error) => {
   error

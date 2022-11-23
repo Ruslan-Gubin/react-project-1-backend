@@ -16,6 +16,7 @@ router.patch('/api/comment-update',checkAuth, commentValedation, handleValidatio
 router.patch('/api/comment-like', checkAuth, commentController.setAddLike);
 router.patch('/api/comment-dislike', checkAuth, commentController.setAddDislaik); 
 router.delete('/api/comments-remove', checkAuth, commentController.remove);
+router.get('/api/comments-user', checkAuth, commentController.getUserComments);
 
 
 export const commentRouter = router; 

@@ -6,6 +6,12 @@ const commentSchema = new Schema({
     type: String,
     required: true,
   },
+  target: {
+    type: {
+      category: String,
+      _id: String,
+    }
+  },
   likes: {
     type: Array,
     default: [],

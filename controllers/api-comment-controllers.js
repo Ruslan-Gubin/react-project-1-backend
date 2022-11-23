@@ -20,6 +20,14 @@ class CommentController  {
       );
   }
 
+  async getUserComments(req, res) {
+    await commentService.getUserComments(req)
+      .then((comments) => res.status(200).json(comments))
+      .catch((error) =>
+        handleError(res, error.message, "Ну удалось получить комментарии пользователя") 
+      );
+  }
+
   async getOne(req, res) {
     await commentService
       .getOne(req.params.id)

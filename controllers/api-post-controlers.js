@@ -15,6 +15,20 @@ class PostController {
       .catch((error) => handleError(res, error.message, "Не удалось найти статьи"));
   }
 
+  async getUserPosts(req, res) {
+    await postService
+      .getUserPosts(req)
+      .then((posts) => res.status(200).json(posts))
+      .catch((error) => handleError(res, error.message, "Не удалось найти статьи"));
+  }
+
+  async getUserPostsLength(req, res) {
+    await postService
+      .getUserPostsLength(req)
+      .then((length) => res.status(200).json(length))
+      .catch((error) => handleError(res, error.message, "Не удалось найти длину данных"));
+  }
+
   async getLenght(req, res) {
     await postService
       .getLength()
@@ -55,6 +69,20 @@ class PostController {
     .setRemoveComment(req)
     .then(() => res.status(200).json({ success: true }))
     .catch((error) => handleError(res, error.message, "Не удалось удалить комментарий"));
+  }
+
+  async setUpdateLikes(req, res) {
+    await postService
+    .setUpdateLikes(req)
+    .then(() => res.status(200).json({ success: true }))
+    .catch((error) => handleError(res, error.message, "Не удалось добавить лайк"));
+  }
+
+  async setUpdateDislike(req, res) {
+    await postService
+    .setUpdateDislike(req)
+    .then(() => res.status(200).json({ success: true }))
+    .catch((error) => handleError(res, error.message, "Не удалось добавить лайк"));
   }
 
   async getTags(req, res) {

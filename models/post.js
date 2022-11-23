@@ -10,6 +10,14 @@ const postSchema = new Schema({
     type: Array,
     default: [],
   },
+  likes: {
+    type: Array,
+    default: [],
+  },
+  dislikes: {
+    type: Array,
+    default: [],
+  },
   text: {
     type: String,
     required: true,

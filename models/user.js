@@ -15,6 +15,22 @@ const UserShema = new mongoose.Schema(
       type: String,
       require: true,
     },
+    requestFriends: {
+      type: Array,
+      default: [],
+    },
+    friends: {
+      type: Array,
+      default: [],
+    },
+    online: {
+      type: Boolean,
+      default: false,
+    },
+    dialogs: {
+      type: Array,
+      default: [],
+    },
     image: {
       public_id: {
         type: String,
