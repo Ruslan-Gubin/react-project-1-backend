@@ -7,9 +7,14 @@ class PostService {
     this.model = options.model;
   }
 
-  async getAllPost() {
+  async getAllPost(req) {
+    const searchPost = req.query.searchPost;
+    if (!searchPost) {
+      return [];
+    }
+
     return await this.model
-      .find()
+      .find({ title: { $regex: `${searchPost}`, $options: "i" } })
       .sort({ createdAt: -1 })
       .populate("user")
       .exec();
@@ -34,14 +39,19 @@ class PostService {
 
   async getAll(req) {
     const category = req.query.category ? req.query.category : false;
-    const search = req.query.search ? req.query.search.toLowerCase() : "";
+    const search = req.query.search ? req.query.search : "";
     const tag = req.query.tags ? req.query.tags : "";
     const page = (await req.query.page) ? req.query.page : null;
     const perPage = (await req.query.perpage) ? req.query.perpage : null;
     const skips = (page - 1) * perPage;
 
     const result = await this.model
-      .find({ $and: [{ tags: { $regex: tag } }, { title: { $regex: search } }],})
+      .find({
+        $and: [
+          { tags: { $regex: tag } },
+          { title: { $regex: `${search}`, $options: "i" } },
+        ],
+      })
       .skip(skips)
       .limit(perPage)
       .sort(category == "popular" ? { viewsCount: -1 } : { createdAt: -1 })
@@ -53,18 +63,18 @@ class PostService {
   async getUserPosts(req) {
     const category = req.query.category ? req.query.category : false;
     const authId = req.query.auth;
-    const search = req.query.search ? req.query.search.toLowerCase() : "";
+    const search = req.query.search ? req.query.search : "";
     const tag = req.query.tags ? req.query.tags : "";
     const page = (await req.query.page) ? req.query.page : null;
     const perPage = (await req.query.perpage) ? req.query.perpage : null;
     const skips = (page - 1) * perPage;
-   
+
     const result = await this.model
       .find({
         $and: [
           { tags: { $regex: tag } },
           { user: { _id: authId } },
-          { title: { $regex: search } },
+          { title: { $regex: `${search}`, $options: "i" } },
         ],
       })
       .skip(skips)
@@ -82,10 +92,16 @@ class PostService {
       throw new Error("Не указан id пользователя");
     }
     const targetUserId = req.query.auth;
-    const userPosts = await this.model.find({ $and: [{ tags: { $regex: tag } },{ user: { _id: targetUserId } }, { title: { $regex: search } }],})
-  
+    const userPosts = await this.model.find({
+      $and: [
+        { tags: { $regex: tag } },
+        { user: { _id: targetUserId } },
+        { title: { $regex: `${search}`, $options: "i" } },
+      ],
+    });
+
     if (userPosts.length <= 0) {
-      return 1
+      return 1;
     } else {
       return userPosts.length;
     }

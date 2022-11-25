@@ -1,5 +1,6 @@
-import e from "express";
 import { dialogModel } from "../models/index.js";
+import { authService } from "./authService.js";
+import { commentService } from "./commentService.js";
 
 class DialogService {
   constructor(options) {
@@ -31,45 +32,62 @@ class DialogService {
     if (!id) {
       throw new Error("Не найден ID диалога");
     }
-    
-    const dialog = await this.model.findById( id );
-    
+
+    const dialog = await this.model.findById(id);
+
     return dialog;
   }
 
   async setAddComment(req) {
     const dialogId = req.body.targetId;
     const commentId = req.body.commentId;
-    
+
     if (!dialogId && !commentId) {
       throw new Error("Не указан ID поста или коментария");
     }
-    
+
     return await this.model.updateOne(
       { _id: dialogId },
       { $push: { comments: commentId } },
       { returnDocument: "after" }
-      );
+    );
+  }
+
+  async setRemoveComment(req) {
+    const targetId = req.body.targetId;
+    const newArrComments = req.body.newArrComments;
+    console.log(targetId);
+    console.log(req.body);
+    if (!targetId && !newArrComments) {
+      throw new Error("Не указан ID поста или коментария");
     }
 
-    async setRemoveComment(req) {
-      const targetId = req.body.targetId;
-      const newArrComments = req.body.newArrComments;
-      console.log(targetId);
-      console.log(req.body);
-      if (!targetId && !newArrComments) {
-        throw new Error("Не указан ID поста или коментария");
-      }
-  
-      return await this.model.updateOne(
-        { _id: targetId },
-        { comments: newArrComments },
-        { returnDocument: "after" }
-      );
+    return await this.model.updateOne(
+      { _id: targetId },
+      { comments: newArrComments },
+      { returnDocument: "after" }
+    );
+  }
+
+  async setDeleteDialog(req) {
+    try {
+      const dialogId = req.body.dialogId;
+      const userOneId = req.body.userOneId;
+      const userTwoId = req.body.userTwoId;
+      const commentArr = req.body.commentArr;
+
+      await this.model.findByIdAndDelete(dialogId);
+      await commentService.removeCommentsForTarget(commentArr);
+      await authService.setDeleteDialog(userOneId, userTwoId, dialogId);
+
+      return { success: true, message: `Dialog: ${dialogId} deleted` };
+    } catch (error) {
+      console.log(error);
     }
-    
-    // async getAll(req) {
-      //   const category = req.query.category ? req.query.category : false;
+  }
+
+  // async getAll(req) {
+  //   const category = req.query.category ? req.query.category : false;
   //   const search = req.query.search ? req.query.search.toLowerCase() : "";
   //   const tag = req.query.tags ? req.query.tags : "";
   //   const page = (await req.query.page) ? req.query.page : null;
@@ -137,26 +155,6 @@ class DialogService {
   //   return tags;
   // }
 
-  // async remove(req) {
-  //   try {
-  //     const postComments = await this.model.find(
-  //       { _id: req.params.id },
-  //       { _id: false, comments: true }
-  //     );
-  //     const commentsArr = postComments[0].comments;
-
-  //     commentService.removeCommentsForTarget(commentsArr);
-
-  //     const post = await this.model.findByIdAndDelete(req.params.id);
-  //     const imgId = post.image.public_id; ///Posts/ixe9reywr3vtapa0fp1d  public_id
-  //     await cloudinary.uploader.destroy(imgId); // delete image cloudinary
-
-  //     return { success: true, message: "Post deleted" };
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-
   // async update(req) {
   //   const postId = req.body.id;
   //   const prevPost = await this.model.findById(postId);
@@ -186,8 +184,6 @@ class DialogService {
   //     );
   //   }
   // }
-
-
 
   // async setUpdateLikes(req) {
   //   const id = req.body._id;

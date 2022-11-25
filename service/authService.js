@@ -91,7 +91,17 @@ class AuthService {
   }
 
   async getAllUsers(req) {
-    const users = await this.model.find().sort({ createdAt: -1 });
+    const searchFullname = req.query.userFullName
+
+    if (searchFullname.length === 0) {
+      return []
+    } 
+
+    const users = await this.model.find( 
+      { fullName: { $regex: `${searchFullname}`, $options:'i' } } 
+      )
+      .sort({ createdAt: -1 });
+      
     return users;
   }
 
@@ -165,6 +175,23 @@ class AuthService {
         );
   }
 
+  async setDeleteDialog(userOneId, userTwoId, dialogId) {
+  try {
+    await this.model.updateOne(
+      { _id: userOneId },
+      { $pull: { dialogs: dialogId }  },
+      { returnDocument: "after" }
+      );
+      await this.model.updateOne(
+        { _id: userTwoId },
+        { $pull: { dialogs: dialogId } },
+        { returnDocument: "after" }
+        );
+  } catch (error) {
+    console.log(error);
+  }
+  }
+
   async setDeleteFriend(req) {
     if (!req.body.userId && !req.body.guest) {
       throw new Error('Не указан ID пользователя или гостя')
@@ -219,7 +246,7 @@ class AuthService {
     const userArrId = usersId.split(",");
     const users = await this.model.find(
       { _id: { $in: userArrId } },
-      { image: true, fullName: true }
+      { passwordHash: false }
     ).limit(limit);
     return users;
   }

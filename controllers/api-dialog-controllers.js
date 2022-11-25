@@ -21,12 +21,19 @@ class DialogController {
     .then(() => res.status(200).json({ success: true }))
     .catch((error) => handleError(res, error.message, "Не удалось добавить комментарий"));
   }
-
+  
   async setRemoveComment(req, res) {
     await dialogService
     .setRemoveComment(req)
     .then(() => res.status(200).json({ success: true }))
     .catch((error) => handleError(res, error.message, "Не удалось удалить комментарий"));
+  }
+
+  async setDeleteDialog(req, res) {
+    await dialogService
+      .setDeleteDialog(req)
+      .then((message) => res.status(200).json(message))
+      .catch((error) => handleError(res, error.message, "Не удалось удалить диалог"));
   }
 
   // async getAllPosts(req, res) {
@@ -58,12 +65,6 @@ class DialogController {
   // }
 
 
-  // async deletePost(req, res) {
-  //   await postService
-  //     .remove(req)
-  //     .then(() => res.status(200).json({id:req.params.id, success: true}))
-  //     .catch((error) => handleError(res, error.message, "Не удалось удалить статью"));
-  // }
 
   // async updatePost(req, res) {
   //   await postService
