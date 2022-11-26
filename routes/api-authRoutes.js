@@ -7,8 +7,7 @@ import { registerValedation, loginValedation } from "../validations/authValudati
 const router = new Router()
 
 router.post("/api/register", registerValedation, handleValidationErrors, authController.createUser);
-router.post("/api/login",  authController.authorization);
-// router.post("/api/login", loginValedation, handleValidationErrors, authController.authorization);
+router.post("/api/login", loginValedation, handleValidationErrors, authController.authorization);
 router.get("/api/auth", checkAuth, authController.getUserInfo);
 router.get("/api/auth-all", checkAuth, authController.getAllUsers);   
 router.get("/api/auth-likes", checkAuth, authController.getUsersLikes);   
