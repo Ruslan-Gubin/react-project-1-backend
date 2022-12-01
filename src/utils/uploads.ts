@@ -1,4 +1,4 @@
-import { checkAuth } from "../utils/index.js";
+import { checkAuth } from "./index.js";
 import Router from 'express';
 import multer from 'multer';
 import fs from 'fs';

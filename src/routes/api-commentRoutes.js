@@ -1,6 +1,5 @@
 import Router from 'express';
-import { checkAuth } from "../utils/index.js";
-import { handleValidationErrors } from "../utils/index.js";
+import { checkAuth, handleValidationErrors } from "../utils/index.js";
 import { commentController } from '../controllers/index.js';
 import { commentValedation } from '../validations/commentValidation.js';
 

@@ -1,8 +1,8 @@
 import Router from 'express';
 import { postController }  from "../controllers/index.js";
-import { handleValidationErrors } from "../utils/index.js";
+import { checkAuth, handleValidationErrors } from "../utils/index.js";
 import { postCreateValedation } from "../validations/postValidation.js";
-import { checkAuth } from "../utils/index.js";
+
 
 const router = new Router()
 

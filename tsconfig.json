@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "ES5",                                 
+    "module": "ESNext",
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "exactOptionalPropertyTypes": false,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strict": true,
+    "allowJs": true, 
+
+    "downlevelIteration": true,
+    "allowSyntheticDefaultImports": true, 
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,                            
+    "forceConsistentCasingInFileNames": true,                                           
+    "rootDir": "./src",                                   
+    "outDir": "./dist",                                 
+    "skipLibCheck": true,                            
+  },
+  "include": ["src/**/*"], 
+
+}

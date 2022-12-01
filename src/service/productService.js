@@ -1,5 +1,6 @@
 import { productModel } from "../models/index.js";
 import { cloudinaryImagesMethod, cloudinaryImagesRemove } from "../utils/cloudinaryImagesMethod.js";
+
 import { commentService } from "./commentService.js";
 
 class ProductService {
