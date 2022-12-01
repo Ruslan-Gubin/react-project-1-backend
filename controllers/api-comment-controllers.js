@@ -15,9 +15,8 @@ class CommentController  {
   async getAll(req, res) {
     await commentService.getAll(req)
       .then((comments) => res.status(200).json(comments))
-      .catch((error) =>
-        handleError(res, error.message, "Ну удалось получить все комментарии") 
-      );
+      .catch((error) => handleError(res, error.message, "Ну удалось получить все комментарии"));
+      
   }
 
   async getUserComments(req, res) {

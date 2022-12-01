@@ -38,7 +38,7 @@ class PostService {
   }
 
   async getAll(req) {
-    const category = req.query.category ? req.query.category : false;
+    const category = req.query.categor ? req.query.categor : false;
     const search = req.query.search ? req.query.search : "";
     const tag = req.query.tags ? req.query.tags : "";
     const page = (await req.query.page) ? req.query.page : null;
@@ -61,7 +61,7 @@ class PostService {
   }
 
   async getUserPosts(req) {
-    const category = req.query.category ? req.query.category : false;
+    const category = req.query.categor ? req.query.categor : false;
     const authId = req.query.auth;
     const search = req.query.search ? req.query.search : "";
     const tag = req.query.tags ? req.query.tags : "";

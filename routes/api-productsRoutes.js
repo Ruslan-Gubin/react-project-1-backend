@@ -6,12 +6,14 @@ const router = new Router();
 router
   .route("/api/products")
   .get(productController.getProducts)
-  .post(productController.addProduct)
   
   router
   .route("/api/products/:id")
   .get(productController.getOneProduct)
   .patch(productController.editProduct)
-  .delete(productController.deleteProduct);
+  
+  router.get('/api/products-category', productController.getCatigoriesInDepartment)
+  router.post('/api/product-add', productController.addProduct) 
+  router.delete('/api/product-remove', productController.removeProduct) 
 
 export const productRouter = router;

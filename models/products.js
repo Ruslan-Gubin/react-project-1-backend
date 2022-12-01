@@ -7,6 +7,10 @@ const productsSchema = new Schema(
       type: String,
       required: true,
     },
+    comments: {
+      type: Array,
+      default: [],
+    },
     description: {
       type: String,
       required: true,
@@ -31,6 +35,14 @@ const productsSchema = new Schema(
     images: {
       type: Array,
       required: true,
+        public_id:{
+          type: String,
+          required: true
+        },
+        url: {
+          type: String,
+          required: true
+        }
     },
     price: {
       type: Number,
@@ -45,13 +57,9 @@ const productsSchema = new Schema(
       type: Number, 
       required: true,
     },
-    selected: {
-      type: Boolean,
-      required: true,
-    }, 
-    counter: {
+    viewsCount: {
       type: Number,
-      required: true,
+      default: 0,
     },
   },
   {
