@@ -6,7 +6,7 @@ var productsSchema = new Schema({
         required: true,
     },
     comments: {
-        type: Array,
+        type: [String],
         default: [],
     },
     description: {
@@ -21,26 +21,12 @@ var productsSchema = new Schema({
         type: String,
         required: true,
     },
-    types: {
-        type: Object,
-        color: {
-            type: Array,
-        },
-        size: {
-            type: Array,
-        },
-    },
     images: {
-        type: Array,
-        required: true,
-        public_id: {
-            type: String,
-            required: true
-        },
-        url: {
-            type: String,
-            required: true
-        }
+        type: [{
+                public_id: { type: String, required: true },
+                url: { type: String, required: true }
+            }],
+        default: [],
     },
     price: {
         type: Number,
@@ -51,10 +37,6 @@ var productsSchema = new Schema({
         type: Number,
         required: true,
     },
-    discount: {
-        type: Number,
-        required: true,
-    },
     viewsCount: {
         type: Number,
         default: 0,
@@ -62,4 +44,5 @@ var productsSchema = new Schema({
 }, {
     timestamps: true,
 });
-export var productModel = mongoose.model("Products", productsSchema);
+var productModel = mongoose.model("Products", productsSchema);
+export { productModel };

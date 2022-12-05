@@ -1,4 +1,4 @@
-import { cloudinary } from "./cloudinary.js"
+import { cloudinary } from "./cloudinary.js";
 
 const cloudinaryImagesMethod = async (file, folder) => {
 return new Promise(resolve => {

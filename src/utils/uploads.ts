@@ -1,9 +1,9 @@
+import * as express from 'express';
 import { checkAuth } from "./index.js";
-import Router from 'express';
 import multer from 'multer';
 import fs from 'fs';
 
-const router = new Router()
+const router: express.Router =  express.Router();
 
 const storage = multer.diskStorage({
   destination: (_, __, cb) => {
@@ -19,9 +19,9 @@ const storage = multer.diskStorage({
  
 const upload = multer({storage}) 
 
-const createUpload = (req, res) => {
-  res.json({url: `/uploads/${req.file.originalname}`,});}
-    
-router.post('/api/uploads', checkAuth, upload.single('image'), createUpload);
+const createUpload = (req: express.Request, res: express.Response) => {
+   res.json({url: `/uploads/${req.file?.originalname}`,});}
+   router.post('/api/uploads', checkAuth, upload.single('image'), createUpload);
+  
 
 export const uploadRouter = router; 

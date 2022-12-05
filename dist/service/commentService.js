@@ -61,50 +61,47 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 };
 import { commentModel } from "../models/index.js";
 var CommentService = /** @class */ (function () {
-    function CommentService(options) {
-        this.model = options.model;
+    function CommentService(model) {
+        this.model = model;
     }
-    CommentService.prototype.create = function (req) {
+    CommentService.prototype.create = function (body) {
         return __awaiter(this, void 0, void 0, function () {
-            var target, _a, text, likes, user, newComment;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var text, user, target, newComment;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
-                        target = req.body.target;
-                        _a = req.body, text = _a.text, likes = _a.likes;
-                        user = req.userId;
-                        return [4 /*yield*/, new this.model({ text: text, likes: likes, user: user, target: target }).save()];
+                        text = body.text, user = body.user, target = body.target;
+                        return [4 /*yield*/, new this.model({ text: text, user: user, target: target }).save()];
                     case 1:
-                        newComment = _b.sent();
+                        newComment = _a.sent();
                         return [2 /*return*/, newComment];
                 }
             });
         });
     };
-    CommentService.prototype.getAll = function (req) {
+    CommentService.prototype.getAll = function (queryStr) {
         return __awaiter(this, void 0, void 0, function () {
             var arrComments;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, req.query.body.split(',')];
-                    case 1:
-                        arrComments = _a.sent();
-                        if (!!arrComments) return [3 /*break*/, 2];
+                    case 0:
+                        arrComments = queryStr.split(',');
+                        if (!!arrComments) return [3 /*break*/, 1];
                         throw new Error('Данные по запросу комментариев не найдены');
-                    case 2: return [4 /*yield*/, this.model.find({ _id: arrComments }).sort({ createdAt: -1 }).populate("user").exec()];
-                    case 3: return [2 /*return*/, _a.sent()];
+                    case 1: return [4 /*yield*/, this.model.find({ _id: arrComments }).sort({ createdAt: -1 }).populate("user").exec()];
+                    case 2: return [2 /*return*/, _a.sent()];
                 }
             });
         });
     };
-    CommentService.prototype.getUserComments = function (req) {
+    CommentService.prototype.getUserComments = function (query) {
         return __awaiter(this, void 0, void 0, function () {
             var userId, limit;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        userId = req.query.userId;
-                        limit = req.query.limit;
+                        userId = query.userId;
+                        limit = query.limit;
                         if (!userId) {
                             throw new Error('Не указан ID пользователя');
                         }
@@ -158,88 +155,79 @@ var CommentService = /** @class */ (function () {
             });
         });
     };
-    CommentService.prototype.update = function (req) {
+    CommentService.prototype.update = function (id, updateText) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, updateText;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        id = req.query.id;
-                        updateText = req.body.text;
                         if (!id) {
                             throw new Error("не указан ID");
                         }
                         return [4 /*yield*/, this.model.updateOne({ _id: id }, {
                                 text: updateText,
-                                user: req.userId,
                             })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });
     };
-    CommentService.prototype.addLike = function (req) {
+    CommentService.prototype.addLike = function (body, user) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, likesArr, user, comment, comment;
+            var id, likesArr, comment, comment;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, req.body._id];
-                    case 1:
-                        id = _a.sent();
-                        return [4 /*yield*/, req.body.likes];
-                    case 2:
-                        likesArr = _a.sent();
-                        return [4 /*yield*/, req.userId];
-                    case 3:
-                        user = _a.sent();
+                    case 0:
+                        id = body._id;
+                        likesArr = body.likes;
                         if (!id) {
                             throw new Error('Не найден ID комментария');
                         }
-                        if (!likesArr.includes(user)) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.model.findOneAndUpdate({ _id: id }, { likes: likesArr.filter(function (users) { return users !== user; }) }, { returnDocument: "after" })];
-                    case 4:
+                        if (!(likesArr && likesArr.includes(user))) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.model.findOneAndUpdate({ _id: id }, { likes: this.filterArrUsers(likesArr, user) }, { returnDocument: "after" })];
+                    case 1:
                         comment = _a.sent();
                         return [2 /*return*/, comment];
-                    case 5: return [4 /*yield*/, this.model.findOneAndUpdate({ _id: id }, { likes: __spreadArray(__spreadArray([], __read(likesArr), false), [user], false) }, { returnDocument: "after" })];
-                    case 6:
+                    case 2:
+                        if (!(likesArr && !likesArr.includes(user))) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.model.findOneAndUpdate({ _id: id }, { likes: __spreadArray(__spreadArray([], __read(likesArr), false), [user], false) }, { returnDocument: "after" })];
+                    case 3:
                         comment = _a.sent();
                         return [2 /*return*/, comment];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
-    CommentService.prototype.addDislaik = function (req) {
+    CommentService.prototype.addDislaik = function (body, user) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, disLikesArr, user, comment, comment;
+            var id, disLikesArr, comment, comment;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, req.body._id];
-                    case 1:
-                        id = _a.sent();
-                        return [4 /*yield*/, req.body.dislikes];
-                    case 2:
-                        disLikesArr = _a.sent();
-                        return [4 /*yield*/, req.userId];
-                    case 3:
-                        user = _a.sent();
+                    case 0:
+                        id = body._id;
+                        disLikesArr = body.dislikes;
                         if (!id) {
                             throw new Error('Не найден ID комментария');
                         }
-                        if (!disLikesArr.includes(user)) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.model.findOneAndUpdate({ _id: id }, { dislikes: disLikesArr.filter(function (users) { return users !== user; }) }, { returnDocument: "after" })];
-                    case 4:
+                        if (!(disLikesArr && disLikesArr.includes(user))) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.model.findOneAndUpdate({ _id: id }, { dislikes: this.filterArrUsers(disLikesArr, user) }, { returnDocument: "after" })];
+                    case 1:
                         comment = _a.sent();
                         return [2 /*return*/, comment];
-                    case 5: return [4 /*yield*/, this.model.findOneAndUpdate({ _id: id }, { dislikes: __spreadArray(__spreadArray([], __read(disLikesArr), false), [user], false) }, { returnDocument: "after" })];
-                    case 6:
+                    case 2:
+                        if (!(disLikesArr && !disLikesArr.includes(user))) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.model.findOneAndUpdate({ _id: id }, { dislikes: __spreadArray(__spreadArray([], __read(disLikesArr), false), [user], false) }, { returnDocument: "after" })];
+                    case 3:
                         comment = _a.sent();
                         return [2 /*return*/, comment];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
+    };
+    CommentService.prototype.filterArrUsers = function (disLikesArr, user) {
+        return disLikesArr.filter(function (users) { return users !== user; });
     };
     return CommentService;
 }());
-export var commentService = new CommentService({
-    model: commentModel
-});
+export var commentService = new CommentService(commentModel);

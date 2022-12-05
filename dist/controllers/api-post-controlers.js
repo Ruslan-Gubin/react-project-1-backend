@@ -132,7 +132,7 @@ var PostController = /** @class */ (function () {
                             .getLength()
                             .then(function (length) { return res.status(200).json(length); })
                             .catch(function (error) {
-                            return handleError(res, error.message, "Не удалось найти длину данных");
+                            return handleError(res, error.message, "\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u043D\u0430\u0439\u0442\u0438 \u0434\u043B\u0438\u043D\u0443 \u0434\u0430\u043D\u043D\u044B\u0445 ".concat(req));
                         })];
                     case 1:
                         _a.sent();
@@ -143,12 +143,15 @@ var PostController = /** @class */ (function () {
     };
     PostController.prototype.getOnePost = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
+            var id;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, postService
-                            .findOne(req.params.id)
-                            .then(function (post) { return res.status(200).json(post); })
-                            .catch(function (error) { return handleError(res, error.message, "Статья не найдена"); })];
+                    case 0:
+                        id = req.params['id'] ? req.params['id'] : '';
+                        return [4 /*yield*/, postService
+                                .findOne(id)
+                                .then(function (post) { return res.status(200).json(post); })
+                                .catch(function (error) { return handleError(res, error.message, "Статья не найдена"); })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -158,14 +161,17 @@ var PostController = /** @class */ (function () {
     };
     PostController.prototype.deletePost = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
+            var id;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, postService
-                            .remove(req)
-                            .then(function () { return res.status(200).json({ id: req.params.id, success: true }); })
-                            .catch(function (error) {
-                            return handleError(res, error.message, "Не удалось удалить статью");
-                        })];
+                    case 0:
+                        id = req.params['id'] ? req.params['id'] : '';
+                        return [4 /*yield*/, postService
+                                .remove(req)
+                                .then(function () { return res.status(200).json({ id: id, success: true }); })
+                                .catch(function (error) {
+                                return handleError(res, error.message, "Не удалось удалить статью");
+                            })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

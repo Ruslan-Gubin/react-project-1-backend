@@ -1,8 +1,8 @@
-import Router from 'express';
+import * as express from 'express';
 import { authController } from '../controllers/index.js';
 import { checkAuth, handleValidationErrors } from '../utils/index.js';
 import { registerValedation, loginValedation } from "../validations/authValudation.js";
-var router = new Router();
+var router = express.Router();
 router.post("/api/register", registerValedation, handleValidationErrors, authController.createUser);
 router.post("/api/login", loginValedation, handleValidationErrors, authController.authorization);
 router.get("/api/auth", checkAuth, authController.getUserInfo);

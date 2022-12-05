@@ -43,9 +43,12 @@ var ProductController = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, productService.getAllSortProducts(req)
+                    case 0: return [4 /*yield*/, productService
+                            .getAllSortProducts(req)
                             .then(function (products) { return res.status(200).json(products); })
-                            .catch(function (error) { return handleError(res, error.message, "Не удалось получить все товары"); })];
+                            .catch(function (error) {
+                            return handleError(res, error.message, "Не удалось получить все товары");
+                        })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -55,11 +58,17 @@ var ProductController = /** @class */ (function () {
     };
     ProductController.prototype.getOneProduct = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
+            var id;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, productService.getOneId(req)
-                            .then(function (product) { return res.status(200).json(product); })
-                            .catch(function (error) { return handleError(res, error.message, "Не удалось получить продукт"); })];
+                    case 0:
+                        id = req.params.id;
+                        return [4 /*yield*/, productService
+                                .getOneId(id)
+                                .then(function (product) { return res.status(200).json(product); })
+                                .catch(function (error) {
+                                return handleError(res, error.message, "Не удалось получить продукт");
+                            })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -69,39 +78,17 @@ var ProductController = /** @class */ (function () {
     };
     ProductController.prototype.getCatigoriesInDepartment = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
+            var department;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, productService.getCatigoriesInDepartment(req)
-                            .then(function (categories) { return res.status(200).json(categories); })
-                            .catch(function (error) { return handleError(res, error.message, "Не удалось получить категории"); })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ProductController.prototype.removeProduct = function (req, res) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, productService.removeProduct(req)
-                            .then(function () { return res.status(200).json({ success: true, remove: req.body._id }); })
-                            .catch(function (error) { return handleError(res, error.message, "Не удалось удалить продукт"); })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ProductController.prototype.editProduct = function (req, res) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, productService.update(req)
-                            .then(function () { return res.status(200).json({ succses: true }); })
-                            .catch(function (error) { return handleError(res, error, "Не удалось изменить продукт"); })];
+                    case 0:
+                        department = req.query.department;
+                        return [4 /*yield*/, productService
+                                .getCatigoriesInDepartment(department)
+                                .then(function (categories) { return res.status(200).json(categories); })
+                                .catch(function (error) {
+                                return handleError(res, error.message, "Не удалось получить категории");
+                            })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -111,11 +98,53 @@ var ProductController = /** @class */ (function () {
     };
     ProductController.prototype.addProduct = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
+            var reqBody;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, productService.addProduct(req)
-                            .then(function (product) { return res.status(201).send({ succses: true, data: product }); })
-                            .catch(function (error) { return handleError(res, error, "Не удалось создать продукт"); })];
+                    case 0:
+                        reqBody = req.body;
+                        return [4 /*yield*/, productService
+                                .addProduct(reqBody)
+                                .then(function () { return res.status(201).json({ success: true }); })
+                                .catch(function (error) { return handleError(res, error, "Не удалось создать продукт"); })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ProductController.prototype.removeProduct = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var body;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        body = req.body;
+                        return [4 /*yield*/, productService
+                                .removeProduct(body)
+                                .then(function (removeRes) { return res.status(200).json(removeRes); })
+                                .catch(function (error) {
+                                return handleError(res, error.message, "Не удалось удалить продукт");
+                            })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ProductController.prototype.editProduct = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var body;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        body = req.body;
+                        return [4 /*yield*/, productService
+                                .update(body)
+                                .then(function (newProduct) { return res.status(200).json(newProduct); })
+                                .catch(function (error) { return handleError(res, error, "Не удалось изменить продукт"); })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

@@ -179,7 +179,7 @@ var AuthController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, authService.getAllEmail()
                             .then(function (data) { return res.status(200).json(data); })
-                            .catch(function (error) { return handleError(res, error, "Не удалось найти все Email"); })];
+                            .catch(function (error) { return handleError(res, error, "\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u043D\u0430\u0439\u0442\u0438 \u0432\u0441\u0435 Email ".concat(req)); })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

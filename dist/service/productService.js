@@ -1,14 +1,3 @@
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -45,6 +34,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
 var __read = (this && this.__read) || function (o, n) {
     var m = typeof Symbol === "function" && o[Symbol.iterator];
     if (!m) return o;
@@ -70,24 +70,76 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-var __values = (this && this.__values) || function(o) {
-    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-    if (m) return m.call(o);
-    if (o && typeof o.length === "number") return {
-        next: function () {
-            if (o && i >= o.length) o = void 0;
-            return { value: o && o[i++], done: !o };
-        }
-    };
-    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-};
 import { productModel } from "../models/index.js";
 import { cloudinaryImagesMethod, cloudinaryImagesRemove } from "../utils/cloudinaryImagesMethod.js";
 import { commentService } from "./commentService.js";
 var ProductService = /** @class */ (function () {
-    function ProductService(options) {
-        this.model = options.model;
+    function ProductService(model) {
+        this.model = model;
     }
+    ProductService.prototype.addProduct = function (req) {
+        return __awaiter(this, void 0, void 0, function () {
+            var department, title, description, price, oldPrice, quantity, newCategory, select, category, discount, imageUrl, files, files_1, files_1_1, file, newImage, e_1_1, newProduct;
+            var e_1, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (!req.images) {
+                            throw new Error("No images");
+                        }
+                        department = req.department, title = req.title, description = req.description, price = req.price, oldPrice = req.oldPrice, quantity = req.quantity, newCategory = req.newCategory, select = req.select;
+                        category = newCategory ? newCategory : select.value;
+                        if (!category) {
+                            return [2 /*return*/, { success: 'no category' }];
+                        }
+                        discount = oldPrice && Math.ceil(((price - oldPrice) / oldPrice) * 100);
+                        imageUrl = [];
+                        files = req.images;
+                        _b.label = 1;
+                    case 1:
+                        _b.trys.push([1, 6, 7, 8]);
+                        files_1 = __values(files), files_1_1 = files_1.next();
+                        _b.label = 2;
+                    case 2:
+                        if (!!files_1_1.done) return [3 /*break*/, 5];
+                        file = files_1_1.value;
+                        return [4 /*yield*/, cloudinaryImagesMethod(file, "Products")];
+                    case 3:
+                        newImage = _b.sent();
+                        imageUrl.push(newImage);
+                        _b.label = 4;
+                    case 4:
+                        files_1_1 = files_1.next();
+                        return [3 /*break*/, 2];
+                    case 5: return [3 /*break*/, 8];
+                    case 6:
+                        e_1_1 = _b.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3 /*break*/, 8];
+                    case 7:
+                        try {
+                            if (files_1_1 && !files_1_1.done && (_a = files_1.return)) _a.call(files_1);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                        return [7 /*endfinally*/];
+                    case 8: return [4 /*yield*/, this.model.create({
+                            department: department,
+                            title: title,
+                            price: price,
+                            oldPrice: oldPrice ? oldPrice : '',
+                            quantity: quantity ? quantity : 0,
+                            discount: oldPrice ? discount : false,
+                            description: description,
+                            category: category,
+                            images: imageUrl.map(function (item) { return item; }),
+                        })];
+                    case 9:
+                        newProduct = _b.sent();
+                        return [2 /*return*/, newProduct && newProduct];
+                }
+            });
+        });
+    };
     ProductService.prototype.getAllSortProducts = function (req) {
         return __awaiter(this, void 0, void 0, function () {
             var department, searchTitle, category, select, optionSelect, perPage, page, skips, totalLength, length, products;
@@ -135,13 +187,12 @@ var ProductService = /** @class */ (function () {
             });
         });
     };
-    ProductService.prototype.getOneId = function (req) {
+    ProductService.prototype.getOneId = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, veiwsUpdate;
+            var veiwsUpdate;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        id = req.params.id;
                         if (!id) {
                             throw new Error("Не найден Id продукта");
                         }
@@ -153,23 +204,21 @@ var ProductService = /** @class */ (function () {
             });
         });
     };
-    ProductService.prototype.getCatigoriesInDepartment = function (req) {
+    ProductService.prototype.getCatigoriesInDepartment = function (department) {
         return __awaiter(this, void 0, void 0, function () {
-            var department, departmentArr, filterArrSet, map, addAll;
+            var departmentArr, filterArrSet, map, addAll;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        department = req.query.department;
                         if (!department) {
-                            throw new Error("Department не указан");
+                            throw new Error("Department не найден");
                         }
                         return [4 /*yield*/, this.model.find({ department: department }, { _id: false, category: 1 })];
                     case 1:
                         departmentArr = _a.sent();
                         filterArrSet = [];
                         departmentArr.forEach(function (item) {
-                            var copyFilterArrSet = filterArrSet;
-                            if (!copyFilterArrSet.includes(item.category)) {
+                            if (!filterArrSet.includes(item.category)) {
                                 filterArrSet.push(item.category);
                             }
                         });
@@ -182,79 +231,22 @@ var ProductService = /** @class */ (function () {
             });
         });
     };
-    ProductService.prototype.addProduct = function (req) {
+    ProductService.prototype.removeProduct = function (body) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, department, title, description, price, oldPrice, quantity, newCategory, select, category, discount, imageUrl, files, files_1, files_1_1, file, newImage, e_1_1, newProduct;
-            var e_1, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var _id, images, comments, images_1, images_1_1, item, imgPublicId;
+            var e_2, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a = req.body, department = _a.department, title = _a.title, description = _a.description, price = _a.price, oldPrice = _a.oldPrice, quantity = _a.quantity, newCategory = _a.newCategory, select = _a.select;
-                        category = newCategory ? newCategory : select.value;
-                        discount = Math.ceil(((price - oldPrice) / oldPrice) * 100);
-                        imageUrl = [];
-                        files = req.body.images;
-                        _c.label = 1;
-                    case 1:
-                        _c.trys.push([1, 6, 7, 8]);
-                        files_1 = __values(files), files_1_1 = files_1.next();
-                        _c.label = 2;
-                    case 2:
-                        if (!!files_1_1.done) return [3 /*break*/, 5];
-                        file = files_1_1.value;
-                        return [4 /*yield*/, cloudinaryImagesMethod(file, "Products")];
-                    case 3:
-                        newImage = _c.sent();
-                        imageUrl.push(newImage);
-                        _c.label = 4;
-                    case 4:
-                        files_1_1 = files_1.next();
-                        return [3 /*break*/, 2];
-                    case 5: return [3 /*break*/, 8];
-                    case 6:
-                        e_1_1 = _c.sent();
-                        e_1 = { error: e_1_1 };
-                        return [3 /*break*/, 8];
-                    case 7:
-                        try {
-                            if (files_1_1 && !files_1_1.done && (_b = files_1.return)) _b.call(files_1);
-                        }
-                        finally { if (e_1) throw e_1.error; }
-                        return [7 /*endfinally*/];
-                    case 8: return [4 /*yield*/, this.model.create({
-                            department: department,
-                            title: title,
-                            price: price,
-                            oldPrice: oldPrice,
-                            quantity: quantity,
-                            discount: discount,
-                            description: description,
-                            category: category,
-                            images: imageUrl.map(function (item) { return item; }),
-                        })];
-                    case 9:
-                        newProduct = _c.sent();
-                        return [2 /*return*/, newProduct];
-                }
-            });
-        });
-    };
-    ProductService.prototype.removeProduct = function (req) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _a, _id, images, comments, images_1, images_1_1, item, imgPublicId;
-            var e_2, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0:
-                        _a = req.body, _id = _a._id, images = _a.images, comments = _a.comments;
+                        _id = body._id, images = body.images, comments = body.comments;
                         return [4 /*yield*/, this.model.findByIdAndDelete(_id) // remove Product
                                 .catch(function (error) { return console.log(error); })];
                     case 1:
-                        _c.sent();
+                        _b.sent();
                         return [4 /*yield*/, commentService.removeCommentsForTarget(comments)
                                 .catch(function (error) { return console.log(error); })]; //remove comments Product
                     case 2:
-                        _c.sent(); //remove comments Product
+                        _b.sent(); //remove comments Product
                         try {
                             for (images_1 = __values(images), images_1_1 = images_1.next(); !images_1_1.done; images_1_1 = images_1.next()) {
                                 item = images_1_1.value;
@@ -266,26 +258,87 @@ var ProductService = /** @class */ (function () {
                         catch (e_2_1) { e_2 = { error: e_2_1 }; }
                         finally {
                             try {
-                                if (images_1_1 && !images_1_1.done && (_b = images_1.return)) _b.call(images_1);
+                                if (images_1_1 && !images_1_1.done && (_a = images_1.return)) _a.call(images_1);
                             }
                             finally { if (e_2) throw e_2.error; }
                         }
-                        return [2 /*return*/];
+                        return [2 /*return*/, { success: true, remove: _id }];
                 }
             });
         });
     };
-    ProductService.prototype.update = function (req) {
+    ProductService.prototype.update = function (body) {
         return __awaiter(this, void 0, void 0, function () {
-            var prevProduct, updatedProduct;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.getOneId(req.params.id)];
+            var id, description, discount, newQantity, oldPrice, price, title, select, newCategory, remainsImages, imageAddUpdate, imageRemovesUpdate, category, newImagesUrl, imageAddUpdate_1, imageAddUpdate_1_1, file, newImage, e_3_1, images, imageRemovesUpdate_1, imageRemovesUpdate_1_1, item, e_4_1, updatedProduct;
+            var e_3, _a, e_4, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        if (!body) {
+                            throw new Error('Не получено тело запроса');
+                        }
+                        id = body.id, description = body.description, discount = body.discount, newQantity = body.newQantity, oldPrice = body.oldPrice, price = body.price, title = body.title, select = body.select, newCategory = body.newCategory, remainsImages = body.remainsImages, imageAddUpdate = body.imageAddUpdate, imageRemovesUpdate = body.imageRemovesUpdate;
+                        category = newCategory ? newCategory : select.value;
+                        newImagesUrl = [];
+                        _c.label = 1;
                     case 1:
-                        prevProduct = _a.sent();
-                        return [4 /*yield*/, this.model.updateOne({ _id: req.params.id }, __assign(__assign({}, req.body), { quantity: prevProduct.quantity + req.body.quantity }))];
+                        _c.trys.push([1, 6, 7, 8]);
+                        imageAddUpdate_1 = __values(imageAddUpdate), imageAddUpdate_1_1 = imageAddUpdate_1.next();
+                        _c.label = 2;
                     case 2:
-                        updatedProduct = _a.sent();
+                        if (!!imageAddUpdate_1_1.done) return [3 /*break*/, 5];
+                        file = imageAddUpdate_1_1.value;
+                        return [4 /*yield*/, cloudinaryImagesMethod(file, "Products")];
+                    case 3:
+                        newImage = _c.sent();
+                        newImagesUrl.push(newImage);
+                        _c.label = 4;
+                    case 4:
+                        imageAddUpdate_1_1 = imageAddUpdate_1.next();
+                        return [3 /*break*/, 2];
+                    case 5: return [3 /*break*/, 8];
+                    case 6:
+                        e_3_1 = _c.sent();
+                        e_3 = { error: e_3_1 };
+                        return [3 /*break*/, 8];
+                    case 7:
+                        try {
+                            if (imageAddUpdate_1_1 && !imageAddUpdate_1_1.done && (_a = imageAddUpdate_1.return)) _a.call(imageAddUpdate_1);
+                        }
+                        finally { if (e_3) throw e_3.error; }
+                        return [7 /*endfinally*/];
+                    case 8:
+                        images = __spreadArray(__spreadArray([], __read(remainsImages), false), __read(newImagesUrl), false);
+                        _c.label = 9;
+                    case 9:
+                        _c.trys.push([9, 14, 15, 16]);
+                        imageRemovesUpdate_1 = __values(imageRemovesUpdate), imageRemovesUpdate_1_1 = imageRemovesUpdate_1.next();
+                        _c.label = 10;
+                    case 10:
+                        if (!!imageRemovesUpdate_1_1.done) return [3 /*break*/, 13];
+                        item = imageRemovesUpdate_1_1.value;
+                        return [4 /*yield*/, cloudinaryImagesRemove(item)
+                                .catch(function (error) { return console.log(error); })];
+                    case 11:
+                        _c.sent();
+                        _c.label = 12;
+                    case 12:
+                        imageRemovesUpdate_1_1 = imageRemovesUpdate_1.next();
+                        return [3 /*break*/, 10];
+                    case 13: return [3 /*break*/, 16];
+                    case 14:
+                        e_4_1 = _c.sent();
+                        e_4 = { error: e_4_1 };
+                        return [3 /*break*/, 16];
+                    case 15:
+                        try {
+                            if (imageRemovesUpdate_1_1 && !imageRemovesUpdate_1_1.done && (_b = imageRemovesUpdate_1.return)) _b.call(imageRemovesUpdate_1);
+                        }
+                        finally { if (e_4) throw e_4.error; }
+                        return [7 /*endfinally*/];
+                    case 16: return [4 /*yield*/, this.model.updateOne({ _id: id }, { images: images, title: title, description: description, discount: discount, quantity: newQantity, oldPrice: oldPrice, price: price, category: category })];
+                    case 17:
+                        updatedProduct = _c.sent();
                         return [2 /*return*/, updatedProduct];
                 }
             });
@@ -293,4 +346,6 @@ var ProductService = /** @class */ (function () {
     };
     return ProductService;
 }());
-export var productService = new ProductService({ model: productModel });
+export { ProductService };
+var productService = new ProductService(productModel);
+export { productService };

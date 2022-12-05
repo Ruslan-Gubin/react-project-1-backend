@@ -41,14 +41,17 @@ var CommentController = /** @class */ (function () {
     }
     CommentController.prototype.create = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
+            var body;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, commentService
-                            .create(req)
-                            .then(function (comments) { return res.status(201).json(comments); })
-                            .catch(function (error) {
-                            return handleError(res, error, "Ну удалось добавить комментарий");
-                        })];
+                    case 0:
+                        body = req.body;
+                        return [4 /*yield*/, commentService
+                                .create(body)
+                                .then(function (comments) { return res.status(201).json(comments); })
+                                .catch(function (error) {
+                                return handleError(res, error, "Ну удалось добавить комментарий");
+                            })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -58,11 +61,14 @@ var CommentController = /** @class */ (function () {
     };
     CommentController.prototype.getAll = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
+            var queryStr;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, commentService.getAll(req)
-                            .then(function (comments) { return res.status(200).json(comments); })
-                            .catch(function (error) { return handleError(res, error.message, "Ну удалось получить все комментарии"); })];
+                    case 0:
+                        queryStr = req.query.body;
+                        return [4 /*yield*/, commentService.getAll(queryStr)
+                                .then(function (comments) { return res.status(200).json(comments); })
+                                .catch(function (error) { return handleError(res, error.message, "Ну удалось получить все комментарии"); })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -72,13 +78,16 @@ var CommentController = /** @class */ (function () {
     };
     CommentController.prototype.getUserComments = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
+            var query;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, commentService.getUserComments(req)
-                            .then(function (comments) { return res.status(200).json(comments); })
-                            .catch(function (error) {
-                            return handleError(res, error.message, "Ну удалось получить комментарии пользователя");
-                        })];
+                    case 0:
+                        query = req.query;
+                        return [4 /*yield*/, commentService.getUserComments(query)
+                                .then(function (comments) { return res.status(200).json(comments); })
+                                .catch(function (error) {
+                                return handleError(res, error.message, "Ну удалось получить комментарии пользователя");
+                            })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -88,14 +97,17 @@ var CommentController = /** @class */ (function () {
     };
     CommentController.prototype.getOne = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
+            var id;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, commentService
-                            .getOne(req.params.id)
-                            .then(function (comment) { return res.status(200).json(comment); })
-                            .catch(function (error) {
-                            return handleError(res, error, "Ну удалось получить комментарий");
-                        })];
+                    case 0:
+                        id = req.params.id;
+                        return [4 /*yield*/, commentService
+                                .getOne(id)
+                                .then(function (comment) { return res.status(200).json(comment); })
+                                .catch(function (error) {
+                                return handleError(res, error, "Ну удалось получить комментарий");
+                            })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -105,14 +117,17 @@ var CommentController = /** @class */ (function () {
     };
     CommentController.prototype.remove = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
+            var id;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, commentService
-                            .remove(req.query.id)
-                            .then(function () { return res.status(200).json({ success: true }); })
-                            .catch(function (error) {
-                            return handleError(res, error, "Не удалось удалить комментарий");
-                        })];
+                    case 0:
+                        id = req.query.id;
+                        return [4 /*yield*/, commentService
+                                .remove(id)
+                                .then(function () { return res.status(200).json({ success: true }); })
+                                .catch(function (error) {
+                                return handleError(res, error, "Не удалось удалить комментарий");
+                            })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -122,14 +137,18 @@ var CommentController = /** @class */ (function () {
     };
     CommentController.prototype.update = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
+            var id, updateText;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, commentService
-                            .update(req)
-                            .then(function (comments) { return res.status(200).json(comments); })
-                            .catch(function (error) {
-                            return handleError(res, error, "Не удалось обновить комментарий");
-                        })];
+                    case 0:
+                        id = req.body.updateId;
+                        updateText = req.body.text;
+                        return [4 /*yield*/, commentService
+                                .update(id, updateText)
+                                .then(function (comments) { return res.status(200).json(comments); })
+                                .catch(function (error) {
+                                return handleError(res, error, "Не удалось обновить комментарий");
+                            })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -139,14 +158,18 @@ var CommentController = /** @class */ (function () {
     };
     CommentController.prototype.setAddLike = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
+            var user, body;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, commentService
-                            .addLike(req)
-                            .then(function () { return res.status(201).json({ success: true }); })
-                            .catch(function (error) {
-                            return handleError(res, "Не удалось поставить лайк", error.message);
-                        })];
+                    case 0:
+                        user = req.userId;
+                        body = req.body;
+                        return [4 /*yield*/, commentService
+                                .addLike(body, user)
+                                .then(function () { return res.status(201).json({ success: true }); })
+                                .catch(function (error) {
+                                return handleError(res, "Не удалось поставить лайк", error.message);
+                            })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -156,14 +179,18 @@ var CommentController = /** @class */ (function () {
     };
     CommentController.prototype.setAddDislaik = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
+            var user, body;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, commentService
-                            .addDislaik(req)
-                            .then(function () { return res.status(201).json({ success: true }); })
-                            .catch(function (error) {
-                            return handleError(res, "Не удалось поставить дизлайк", error.message);
-                        })];
+                    case 0:
+                        user = req.userId;
+                        body = req.body;
+                        return [4 /*yield*/, commentService
+                                .addDislaik(body, user)
+                                .then(function () { return res.status(201).json({ success: true }); })
+                                .catch(function (error) {
+                                return handleError(res, "Не удалось поставить дизлайк", error.message);
+                            })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

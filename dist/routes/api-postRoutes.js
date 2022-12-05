@@ -1,8 +1,8 @@
-import Router from 'express';
+import * as express from 'express';
 import { postController } from "../controllers/index.js";
 import { checkAuth, handleValidationErrors } from "../utils/index.js";
 import { postCreateValedation } from "../validations/postValidation.js";
-var router = new Router();
+var router = express.Router();
 router.route('/api/post/:id')
     .get(postController.getOnePost)
     .delete(checkAuth, postController.deletePost)

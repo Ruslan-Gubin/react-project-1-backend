@@ -12,11 +12,11 @@ var commentSchema = new Schema({
         }
     },
     likes: {
-        type: Array,
+        type: [String],
         default: [],
     },
     dislikes: {
-        type: Array,
+        type: [String],
         default: [],
     },
     user: {

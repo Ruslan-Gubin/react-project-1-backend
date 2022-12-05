@@ -47,13 +47,16 @@ app.use(express.json({ limit: '50mb' }));
 (function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoose
-                    .connect(process.env.MONGO_URL)
-                    .then(function () { return console.log(chalks.success("DB Product ok")); })
-                    .catch(function (err) { return console.log(chalks.error("DB error", err)); })];
+            case 0:
+                if (!process.env['MONGO_URL']) return [3 /*break*/, 2];
+                return [4 /*yield*/, mongoose
+                        .connect(process.env['MONGO_URL'])
+                        .then(function () { return console.log(chalks.success("DB Product ok")); })
+                        .catch(function (err) { return console.log(chalks.error("DB error", err)); })];
             case 1:
                 _a.sent();
-                return [2 /*return*/];
+                _a.label = 2;
+            case 2: return [2 /*return*/];
         }
     });
 }); })();
@@ -62,8 +65,6 @@ app.use(routes.postRouter);
 app.use(routes.authRouter);
 app.use(routes.commentRouter);
 app.use(routes.dialogRouter);
-app.listen(process.env.PORT || 4444, function (error) {
-    error
-        ? console.log(chalks.error(error))
-        : console.log(chalks.success("Listening port ".concat(process.env.PORT || 4444)));
+app.listen(process.env['PORT'] || 4444, function () {
+    console.log(chalks.success("Listening port ".concat(process.env['PORT'] || 4444)));
 });

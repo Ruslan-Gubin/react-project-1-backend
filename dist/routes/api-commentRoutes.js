@@ -1,8 +1,8 @@
-import Router from 'express';
+import * as express from 'express';
 import { checkAuth, handleValidationErrors } from "../utils/index.js";
 import { commentController } from '../controllers/index.js';
 import { commentValedation } from '../validations/commentValidation.js';
-var router = new Router();
+var router = express.Router();
 router.route('/api/comments')
     .get(commentController.getAll)
     .post(checkAuth, commentValedation, handleValidationErrors, commentController.create);
