@@ -1,0 +1,11 @@
+export type {IPost} from './IPost.js';
+export type {CreateTypeBody} from './CreatePost.js';
+export type {GetPostsQuery} from './GetPosts.js';
+export type {GetUserPostsQuery} from './GetUserPosts.js';
+export type {GetUserPostLengthQuery} from './GetUserPostLength.js';
+export type {UpdatePostBody} from './UpdatePost.js';
+export type {RemoveCommentInPostBody} from './RemoveCommentInPost.js';
+export type {AddlikesBody} from './AddLikes.js';
+export type {AddDislikeBody} from './AddDislike.js';
+export type {GetTagsPostQuery} from './GetTagsPost.js';
+export type {AddCommentPostBody} from './AddCommentPost.js';

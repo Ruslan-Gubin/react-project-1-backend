@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-var UserShema = new mongoose.Schema({
+const UserShema = new mongoose.Schema({
     fullName: {
         type: String,
         require: true,
@@ -7,18 +7,18 @@ var UserShema = new mongoose.Schema({
     email: {
         type: String,
         require: true,
-        unique: true, //уникальное значение
+        unique: true,
     },
     passwordHash: {
         type: String,
         require: true,
     },
     requestFriends: {
-        type: Array,
+        type: [String],
         default: [],
     },
     friends: {
-        type: Array,
+        type: [String],
         default: [],
     },
     online: {
@@ -26,7 +26,7 @@ var UserShema = new mongoose.Schema({
         default: false,
     },
     dialogs: {
-        type: Array,
+        type: [String],
         default: [],
     },
     image: {
@@ -39,6 +39,5 @@ var UserShema = new mongoose.Schema({
             require: true,
         }
     },
-}, { timestamps: true } // дата создания
-);
-export var userModel = mongoose.model("User", UserShema);
+}, { timestamps: true });
+export const userModel = mongoose.model("User", UserShema);

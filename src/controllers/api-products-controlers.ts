@@ -1,12 +1,12 @@
 import {  Response } from "express";
 import { productService } from "../service/index.js";
-import * as types from "../types/index.js";
+import * as types from "../types/productTypes/index.js";
 import { handleError } from "../utils/index.js";
-
+import { IRequestBody, IRequestParams, IRequestQuery } from '../types/IRequestRespons/index.js';
 
 class ProductController {
  
-  async getProducts(req: types.IRequestQuery<types.GetAllProductModelQuery>, res: Response<{data: types.IProduct[],length: number}>) {
+  async getProducts(req: IRequestQuery<types.GetAllProductModelQuery>, res: Response<{data: types.IProduct[],length: number}>) {
     await productService
     .getAllSortProducts(req)
     .then((products) => res.status(200).json(products)) 
@@ -15,7 +15,7 @@ class ProductController {
     );
   }
   
-  async getOneProduct(req: types.IRequestParams<{id: string}>, res: Response<types.IProduct | null>) {
+  async getOneProduct(req: IRequestParams<{id: string}>, res: Response<types.IProduct | null>) {
     const id = req.params.id
     await productService
     .getOneId(id)
@@ -25,7 +25,7 @@ class ProductController {
     );
   }
   
-  async getCatigoriesInDepartment(req: types.IRequestQuery<types.GetCatigoryesTypeParams>, res: Response<types.GetCatigoryesTypeRespons[]>) {
+  async getCatigoriesInDepartment(req: IRequestQuery<types.GetCatigoryesTypeParams>, res: Response<types.GetCatigoryesTypeRespons[]>) {
     const department = req.query.department; 
     await productService
     .getCatigoriesInDepartment(department)
@@ -35,7 +35,7 @@ class ProductController {
         );
       }
 
-      async addProduct(req: types.IRequestBody<types.CreateProductModel>,res: Response<types.CreateProductModelRespons>) {
+      async addProduct(req: IRequestBody<types.CreateProductModel>,res: Response<types.CreateProductModelRespons>) {
         const reqBody = req.body;
         await productService
           .addProduct(reqBody)
@@ -43,7 +43,7 @@ class ProductController {
           .catch((error) => handleError(res, error, "Не удалось создать продукт"));
       }
       
-      async removeProduct(req: types.IRequestBody<types.RemoveProductModelBody>, res: Response<types.RemoveProductModelResponse>) {
+      async removeProduct(req: IRequestBody<types.RemoveProductModelBody>, res: Response<types.RemoveProductModelResponse>) {
         const body = req.body
         await productService 
         .removeProduct(body)  
@@ -53,7 +53,7 @@ class ProductController {
         );
       }
       
-      async editProduct(req: types.IRequestBody<types.UpdateProductBody>, res: Response) {
+      async editProduct(req: IRequestBody<types.UpdateProductBody>, res: Response) {
         const body = req.body
         await productService
         .update(body)

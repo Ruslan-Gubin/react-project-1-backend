@@ -1,5 +1,6 @@
 {
-  "execMap": {
-      "ts": "ts-node"
-  }
+  "watch": ["dist"],
+  "ext": ".ts,.js",
+  "ignore": [],
+  "exec": "npx ts-node  ./dist/index.js"
 }

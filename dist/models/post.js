@@ -1,20 +1,20 @@
 import mongoose from "mongoose";
-var Schema = mongoose.Schema;
-var postSchema = new Schema({
+const Schema = mongoose.Schema;
+const postSchema = new Schema({
     title: {
         type: String,
         required: true,
     },
     comments: {
-        type: Array,
+        type: [String],
         default: [],
     },
     likes: {
-        type: Array,
+        type: [String],
         default: [],
     },
     dislikes: {
-        type: Array,
+        type: [String],
         default: [],
     },
     text: {
@@ -22,7 +22,7 @@ var postSchema = new Schema({
         required: true,
     },
     tags: {
-        type: Array,
+        type: [String],
         default: [],
     },
     viewsCount: {
@@ -45,4 +45,4 @@ var postSchema = new Schema({
         }
     }
 }, { timestamps: true });
-export var postModel = mongoose.model("Post", postSchema);
+export const postModel = mongoose.model("Post", postSchema);

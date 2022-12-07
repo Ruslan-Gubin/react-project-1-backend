@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-var Schema = mongoose.Schema;
-var commentSchema = new Schema({
+const Schema = mongoose.Schema;
+const commentSchema = new Schema({
     text: {
         type: String,
         required: true,
@@ -25,4 +25,4 @@ var commentSchema = new Schema({
         required: true,
     },
 }, { timestamps: true });
-export var commentModel = mongoose.model("Comment", commentSchema);
+export const commentModel = mongoose.model("Comment", commentSchema);

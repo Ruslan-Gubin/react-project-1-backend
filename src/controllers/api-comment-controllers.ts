@@ -1,7 +1,7 @@
 import  {Response} from 'express';
 import { commentService } from "../service/index.js";
 import { handleError } from "../utils/index.js";
-import { IRequestBody, IRequestParams,  IRequestQuery } from '../types/index.js';
+import { IRequestBody, IRequestParams, IRequestQuery } from '../types/IRequestRespons/index.js';
 import * as types from '../types/commentsTypes/index.js';
 
 

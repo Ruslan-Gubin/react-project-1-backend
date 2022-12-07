@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import { IUser } from "../types/userType/index.js";
 
-const UserShema = new mongoose.Schema(
+const UserShema = new mongoose.Schema<IUser>(
   {
     fullName: {
       type: String,
@@ -11,16 +12,16 @@ const UserShema = new mongoose.Schema(
       require: true,
       unique: true, //уникальное значение
     },
-    passwordHash: {
+    passwordHash: { 
       type: String,
       require: true,
     },
     requestFriends: {
-      type: Array,
+      type: [String],
       default: [],
     },
     friends: {
-      type: Array,
+      type: [String],
       default: [],
     },
     online: {
@@ -28,7 +29,7 @@ const UserShema = new mongoose.Schema(
       default: false,
     },
     dialogs: {
-      type: Array,
+      type: [String],
       default: [],
     },
     image: {
@@ -45,4 +46,4 @@ const UserShema = new mongoose.Schema(
   { timestamps: true }// дата создания
 );
 
-export const userModel = mongoose.model("User", UserShema);
+export const userModel = mongoose.model<IUser>("User", UserShema);

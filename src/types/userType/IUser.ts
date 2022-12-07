@@ -1,4 +1,5 @@
 
+
 interface IUser {
   image: {public_id: string, url: string}
   _id: string
@@ -10,7 +11,9 @@ interface IUser {
   online: boolean
   createdAt: string
   updatedAt: string
-  __v: number
+  passwordHash?: string
+  token: string
+  _doc: IUser
 }
 
 export type {IUser}

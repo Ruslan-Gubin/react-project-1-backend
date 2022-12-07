@@ -1,132 +1,130 @@
-import * as express from 'express';
-import { handleError } from "../utils/index.js";
-import { postService } from "../service/index.js";
+import { Response, Request } from 'express';
+import { handleError } from '../utils/index.js';
+import { postService } from '../service/index.js';
+import { IRequestBody, IRequestParams, IRequestQuery } from '../types/IRequestRespons/index.js';
+import * as types from '../types/postTypes/index.js';
 
 
 class PostController {
-  async createPost(req: express.Request, res: express.Response) {
-    await postService
-      .create(req)
+
+  async createPost(req: IRequestBody<types.CreateTypeBody>, res: Response<types.IPost>) {
+    const body = req.body
+    //@ts-ignore start
+    const user = req.userId;
+    //@ts-ignore end
+    await postService 
+      .create(body, user)
       .then((post) => res.status(201).json(post))
-      .catch((error) =>
-        handleError(res, error.message, "Не удалось создать статью")
-      );
-  }
-
-  async getAllPosts(req: express.Request, res: express.Response) {
-    await postService
-      .getAllPost(req)
+      .catch((error) => handleError(res, error.message, 'Не удалось создать статью'));
+    }
+    
+    async getAllPosts(req: IRequestQuery<{searchPost: string}>, res: Response<types.IPost[]>) {
+      const searchPost = req.query.searchPost
+      await postService
+      .getAllPost(searchPost)
       .then((posts) => res.status(200).json(posts))
-      .catch((error) =>
-        handleError(res, error.message, "Не удалось найти статьи")
-      );
-  }
-
-  async getAllGlobalPosts(req: express.Request, res: express.Response) {
+      .catch((error) => handleError(res, error.message, 'Не удалось найти статьи'));
+    }
+    
+    async getAllGlobalPosts(req: IRequestQuery<any>, res: Response<types.IPost[]>) {
+      const query = req.query 
     await postService
-      .getAll(req)
+      .getAll(query)
       .then((posts) => res.status(200).json(posts))
-      .catch((error) =>
-        handleError(res, error.message, "Не удалось найти статьи")
-      );
+      .catch((error) => handleError(res, error.message, 'Не удалось найти статьи'));
   }
 
-  async getUserPosts(req: express.Request, res: express.Response) {
+  async getUserPosts(req: IRequestQuery<types.GetUserPostsQuery>, res: Response<types.IPost[]>) {
+    const query = req.query
     await postService
-      .getUserPosts(req)
+      .getUserPosts(query)
       .then((posts) => res.status(200).json(posts))
-      .catch((error) =>
-        handleError(res, error.message, "Не удалось найти статьи")
-      );
+      .catch((error) => handleError(res, error.message, 'Не удалось найти статьи'));
   }
 
-  async getUserPostsLength(req: express.Request, res: express.Response) {
+  async getUserPostsLength(req: IRequestQuery<types.GetUserPostLengthQuery>, res: Response<number>) {
+    const query = req.query
     await postService
-      .getUserPostsLength(req)
+      .getUserPostsLength(query)
       .then((length) => res.status(200).json(length))
-      .catch((error) =>
-        handleError(res, error.message, "Не удалось найти длину данных")
-      );
+      .catch((error) => handleError(res, error.message, 'Не удалось найти длину данных'));
   }
 
-  async getLenght(req: express.Request, res: express.Response) {
+  async getLenght(req: Request, res: Response<number>) {
     await postService
-      .getLength()
-      .then((length) => res.status(200).json(length))
-      .catch((error) =>
-        handleError(res, error.message, `Не удалось найти длину данных ${req}`)
-      );
+    .getLength()
+    .then((length) => res.status(200).json(length))
+    .catch((error) => handleError(res, error.message, `Не удалось найти длину данных ${req}`));
   }
-
-  async getOnePost(req: express.Request, res: express.Response) {
-    const id:string = req.params['id'] ? req.params['id'] : ''
-
+  
+  async getOnePost(req: IRequestParams<{id: string}>, res: Response<types.IPost >) {
+    const id = req.params.id;
     await postService
-      .findOne(id)
+    .findOne(id)
       .then((post) => res.status(200).json(post))
-      .catch((error) => handleError(res, error.message, "Статья не найдена"));
-  }
-
-  async deletePost(req: express.Request, res: express.Response) {
-    const id:string = req.params['id'] ? req.params['id'] : ''
-    await postService
-      .remove(req)
+      .catch((error) => handleError(res, error.message, 'Статья не найдена'));
+    }
+    
+    async deletePost(req: IRequestParams<{id: string}>, res: Response<{id:string, success: boolean}>) {
+      const id = req.params.id;
+      await postService
+      .remove(id)
       .then(() => res.status(200).json({ id, success: true }))
-      .catch((error) =>
-        handleError(res, error.message, "Не удалось удалить статью")
-      );
-  }
-
-  async updatePost(req: express.Request, res: express.Response) {
-    await postService
-      .update(req)
+      .catch((error) => handleError(res, error.message, 'Не удалось удалить статью'));
+    }
+    
+    async updatePost(req: IRequestBody<types.UpdatePostBody>, res: Response<{ success: boolean }>) {
+      const body = req.body
+      await postService
+      .update(body)
       .then(() => res.status(200).json({ success: true }))
-      .catch((error) => handleError(res, error, "Не удалось обновить статью"));
-  }
-
-  async setAddComment(req: express.Request, res: express.Response) {
-    await postService
-      .setAddComment(req)
+      .catch((error) => handleError(res, error, 'Не удалось обновить статью'));
+    }
+    
+    async setAddComment(req: IRequestBody<types.AddCommentPostBody>, res: Response<{success: boolean}>) {
+      const body = req.body
+      await postService
+      .setAddComment(body)
       .then(() => res.status(200).json({ success: true }))
-      .catch((error) =>
-        handleError(res, error.message, "Не удалось добавить комментарий")
-      );
+      .catch((error) => handleError(res, error.message, 'Не удалось добавить комментарий'));
+  }
+  
+  async setRemoveComment(req: IRequestBody<types.RemoveCommentInPostBody>, res: Response<{success: boolean}>) {
+    const body = req.body
+    await postService
+    .setRemoveComment(body)
+    .then(() => res.status(200).json({ success: true }))
+    .catch((error) => handleError(res, error.message, 'Не удалось удалить комментарий'));
   }
 
-  async setRemoveComment(req: express.Request, res: express.Response) {
+  async setUpdateLikes(req: IRequestBody<types.AddlikesBody>, res: Response<{ success: boolean }>) {
+    const body = req.body
+    //@ts-ignore start
+    const userId =  req.userId;
+    //@ts-ignore end
     await postService
-      .setRemoveComment(req)
-      .then(() => res.status(200).json({ success: true }))
-      .catch((error) =>
-        handleError(res, error.message, "Не удалось удалить комментарий")
-      );
+    .setUpdateLikes(body, userId)
+    .then(() => res.status(200).json({ success: true }))
+    .catch((error) => handleError(res, error.message, 'Не удалось добавить лайк'));
+  }
+  
+  async setUpdateDislike(req: IRequestBody<types.AddDislikeBody>, res: Response<{ success: boolean }>) {
+    const body = req.body
+    //@ts-ignore start
+    const userId =  req.userId;
+    //@ts-ignore end
+    await postService
+    .setUpdateDislike(body, userId)
+    .then(() => res.status(200).json({ success: true }))
+    .catch((error) => handleError(res, error.message, 'Не удалось добавить лайк'));
   }
 
-  async setUpdateLikes(req: express.Request, res: express.Response) {
+  async getTags(req: IRequestQuery<types.GetTagsPostQuery>, res: Response<string[]>) {
+    const query = req.query
     await postService
-      .setUpdateLikes(req)
-      .then(() => res.status(200).json({ success: true }))
-      .catch((error) =>
-        handleError(res, error.message, "Не удалось добавить лайк")
-      );
-  }
-
-  async setUpdateDislike(req: express.Request, res: express.Response) {
-    await postService
-      .setUpdateDislike(req)
-      .then(() => res.status(200).json({ success: true }))
-      .catch((error) =>
-        handleError(res, error.message, "Не удалось добавить лайк")
-      );
-  }
-
-  async getTags(req: express.Request, res: express.Response) {
-    await postService
-      .getTags(req)
+      .getTags(query)
       .then((tags) => res.status(200).json(tags))
-      .catch((error) =>
-        handleError(res, error.message, "Не удалось получить тег")
-      );
+      .catch((error) => handleError(res, error.message, 'Не удалось получить тег'));
   }
 }
 

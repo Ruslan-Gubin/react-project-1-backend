@@ -5,11 +5,12 @@ import * as dotenv from "dotenv";
 import * as routes from "./routes/index.js";
 import { chalks } from "./utils/index.js";
 
-
 const app = express();
 dotenv.config();
 app.use(cors());
-app.use(express.json({limit: '50mb'}));  
+app.use(express.json({limit: '50mb'})); 
+
+
 (async () => {
   if (process.env['MONGO_URL']) {
     await mongoose
@@ -28,3 +29,5 @@ app.use(routes.dialogRouter);
 app.listen(process.env['PORT'] || 4444, () => {  
    console.log(chalks.success(`Listening port ${process.env['PORT'] || 4444}`)); 
 });
+
+export {app}

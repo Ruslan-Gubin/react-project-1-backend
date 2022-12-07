@@ -1,1 +1,10 @@
 export type {IUser} from './IUser.js';
+export type {CreatedUserBody} from './CreatedUser.js';
+export type {AuthorizationUserBody} from './AuthorizationUser.js';
+export type {GetUsersArrayQuery} from './GetUsersArray.js';
+export type {UpdateUserBody} from './UpdateUser.js';
+export type {RemoveUserRequestBody} from './RemoveUserRequest.js';
+export type {AddFriendUserBody} from './AddFriendUser.js';
+export type {RemoveFriendUserBody} from './RemoveFriendUser.js';
+export type {CreateDialogUserBody} from './CreatDialogUser.js';
+export type {AddFriendRequestUserBody} from './AddFriendRequestUser.js';

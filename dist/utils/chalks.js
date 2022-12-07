@@ -1,5 +1,5 @@
 import chalk from "chalk";
-export var chalks = {
+export const chalks = {
     success: chalk.bgKeyword("green").white,
     error: chalk.bgKeyword("white").redBright,
 };

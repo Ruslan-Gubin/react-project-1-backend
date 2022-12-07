@@ -3,7 +3,7 @@ import { productModel } from "../models/index.js";
 import { cloudinaryImagesMethod, cloudinaryImagesRemove } from "../utils/cloudinaryImagesMethod.js";
 import { commentService } from "./commentService.js";
 import * as types from '../types/productTypes/index.js';
-import { IRequestQuery } from "../types/IRequest.js";
+import { IRequestQuery } from "../types/IRequestRespons/IRequest.js";
 
 
 export class ProductService {      
@@ -18,7 +18,7 @@ export class ProductService {
     const { department, title, description, price, oldPrice, quantity, newCategory, select,
     } = req;
     
-    let category = newCategory ? newCategory : select.value;
+    const category = newCategory ? newCategory : select.value;
     if (!category) { 
       return {success: 'no category'}
     }
@@ -155,7 +155,7 @@ export class ProductService {
     const category = newCategory ? newCategory : select.value
 
     const newImagesUrl = []
-    for (let file of imageAddUpdate) {
+    for (const file of imageAddUpdate) {
       const newImage = await cloudinaryImagesMethod(file, "Products");
       newImagesUrl.push(newImage)
     }

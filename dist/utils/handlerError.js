@@ -1,2 +1,2 @@
-var handleError = function (res, error, text) { return res.status(500).send({ error: error, text: text }); };
+const handleError = (res, error, text) => res.status(500).send({ error, text });
 export { handleError };

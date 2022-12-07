@@ -1,15 +1,16 @@
 import mongoose from "mongoose";
+import { IDialog } from "../types/dialogTypes/index.js";
 const Schema = mongoose.Schema;
 
-const dialogSchema = new Schema(
+const dialogSchema = new Schema<IDialog>(
   {
     comments: {
-      type: Array,
+      type: [String],
       default: [],
     },
     userOne: {
       dialogs: {
-        type: Array,
+        type: [String],
         default: [],
       },
       _id: {
@@ -33,7 +34,7 @@ const dialogSchema = new Schema(
     },
     userTwo: {
       dialogs: {
-        type: Array,
+        type: [String],
         default: [],
       },
       _id: {
@@ -59,4 +60,4 @@ const dialogSchema = new Schema(
   { timestamps: true }
 );
 
-export const dialogModel = mongoose.model("Dialog", dialogSchema);
+export const dialogModel = mongoose.model<IDialog>("Dialog", dialogSchema);

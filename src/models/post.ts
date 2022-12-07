@@ -1,21 +1,22 @@
 import mongoose from "mongoose";
+import { IPost } from "../types/postTypes/index.js";
 const Schema = mongoose.Schema;
 
-const postSchema = new Schema({
+const postSchema = new Schema<IPost>({
   title: {
     type: String,
     required: true,
   },
   comments: {
-    type: Array,
+    type: [String],
     default: [],
   },
   likes: {
-    type: Array,
+    type: [String],
     default: [],
   },
   dislikes: {
-    type: Array,
+    type: [String],
     default: [],
   },
   text: {
@@ -23,7 +24,7 @@ const postSchema = new Schema({
     required: true,
   },
   tags: {
-    type: Array,
+    type: [String],
     default: [],
   },
   viewsCount: {
@@ -49,4 +50,4 @@ const postSchema = new Schema({
 { timestamps: true },
 );
 
-export const postModel = mongoose.model("Post", postSchema);
+export const postModel = mongoose.model<IPost>("Post", postSchema);

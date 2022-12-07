@@ -1,24 +1,26 @@
+import { Model } from "mongoose";
 import { dialogModel } from "../models/index.js";
+import {  CreatedDialogBody, IDialog, RemoveDialogBody } from "../types/dialogTypes/index.js";
 import { authService } from "./authService.js";
 import { commentService } from "./commentService.js";
 
 class DialogService {
-  constructor(options) {
-    this.model = options.model;
-  }
+  constructor(private readonly model: Model<IDialog>) {}
 
-  async createDialog(req) {
-    if (!req.userId && !req.body.targetId) {
+  async createDialog(body: CreatedDialogBody): Promise<any> {
+    if (!body) {
       throw new Error("ID одного из пользователей не найдены");
     }
 
-    const userData = req.body.userOne;
-    const targetData = req.body.userTwo;
+    const userData = body.userOne;
+    const targetData = body.userTwo;
 
+//@ts-ignore start
     if (userData.dialogs.includes(...targetData.dialogs)) {
+      //@ts-ignore end
       throw new Error("Такой диалог уже существует");
     } else {
-      const newDialog = await this.model({
+      const newDialog = await new this.model({
         userOne: userData,
         userTwo: targetData,
       }).save();
@@ -27,33 +29,37 @@ class DialogService {
     }
   }
 
-  async getOneDialog(req) {
-    const id = req.params.id;
-    if (!id) {
+  async getOneDialog(id: string): Promise<IDialog > {
+    try {
+      if (!id) {
       throw new Error("Не найден ID диалога");
     }
 
     const dialog = await this.model.findById(id);
 
-    return dialog;
-  }
+    if (dialog ) {
+      return dialog;
+    } else {
+      throw new Error('not found dialog')
+    }
+    } catch (error) {
+      throw new Error('not found dialog')
+    }
+  } 
 
-  async setAddComment(req) {
-    const dialogId = req.body.targetId;
-    const commentId = req.body.commentId;
-
-    if (!dialogId && !commentId) {
+  async setAddComment(targetId: string, commentId: string): Promise<any> {
+    if (!targetId && !commentId) {
       throw new Error("Не указан ID поста или коментария");
     }
 
     return await this.model.updateOne(
-      { _id: dialogId },
+      { _id: targetId },
       { $push: { comments: commentId } },
       { returnDocument: "after" }
     );
-  }
+  } 
 
-  async setRemoveComment(req) {
+  async setRemoveComment(req: {body: {targetId:string, newArrComments: string[]}}): Promise<any> {
     const targetId = req.body.targetId;
     const newArrComments = req.body.newArrComments;
     console.log(targetId);
@@ -69,12 +75,12 @@ class DialogService {
     );
   }
 
-  async setDeleteDialog(req) {
+  async setDeleteDialog(body: RemoveDialogBody): Promise<{success: boolean, message: string} | undefined> {
     try {
-      const dialogId = req.body.dialogId;
-      const userOneId = req.body.userOneId;
-      const userTwoId = req.body.userTwoId;
-      const commentArr = req.body.commentArr;
+      const dialogId = body.dialogId;
+      const userOneId = body.userOneId;
+      const userTwoId = body.userTwoId;
+      const commentArr = body.commentArr;
 
       await this.model.findByIdAndDelete(dialogId);
       await commentService.removeCommentsForTarget(commentArr);
@@ -89,4 +95,4 @@ class DialogService {
 
 }
 
-export const dialogService = new DialogService({ model: dialogModel });
+export const dialogService = new DialogService(dialogModel);

@@ -1,6 +1,6 @@
 import { IProduct } from "./IProduct.js";
 
-interface RemoveProductModelBody extends IProduct {}
+type RemoveProductModelBody = IProduct
 
 interface RemoveProductModelResponse {
   success: boolean;

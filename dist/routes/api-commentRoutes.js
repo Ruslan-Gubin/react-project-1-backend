@@ -2,7 +2,7 @@ import * as express from 'express';
 import { checkAuth, handleValidationErrors } from "../utils/index.js";
 import { commentController } from '../controllers/index.js';
 import { commentValedation } from '../validations/commentValidation.js';
-var router = express.Router();
+const router = express.Router();
 router.route('/api/comments')
     .get(commentController.getAll)
     .post(checkAuth, commentValedation, handleValidationErrors, commentController.create);
@@ -13,4 +13,4 @@ router.patch('/api/comment-like', checkAuth, commentController.setAddLike);
 router.patch('/api/comment-dislike', checkAuth, commentController.setAddDislaik);
 router.delete('/api/comments-remove', checkAuth, commentController.remove);
 router.get('/api/comments-user', checkAuth, commentController.getUserComments);
-export var commentRouter = router;
+export const commentRouter = router;

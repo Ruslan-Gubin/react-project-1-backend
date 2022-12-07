@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
-var checkAuth = function (req, res, next) {
-    var token = (req.headers.authorization || "").replace(/Bearer\s?/, "");
+const checkAuth = (req, res, next) => {
+    const token = (req.headers.authorization || "").replace(/Bearer\s?/, "");
     if (token) {
         try {
-            var decoded = jwt.verify(token, "secret123");
+            const decoded = jwt.verify(token, "secret123");
             req.userId = decoded._id;
             next();
         }
