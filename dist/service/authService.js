@@ -18,7 +18,7 @@ class AuthService {
         const pas = body.password;
         const salt = await bcrypt.genSalt(10);
         const passwordBcrypt = await bcrypt.hash(pas, salt);
-        const image = body.image;
+        const image = body.imag;
         const resImage = await cloudinary.uploader.upload(image, {
             folder: 'Users',
         });
@@ -189,15 +189,15 @@ class AuthService {
         const passwordBcrypt = await bcrypt.hash(pas, salt);
         const prevAuth = await this.model.findOne({ _id: idAuth });
         const prevImage = prevAuth === null || prevAuth === void 0 ? void 0 : prevAuth.image;
-        if (body.image === body.prevImage) {
+        if (body.imag === body.prevImage) {
             return await this.model.updateOne({ _id: idAuth }, { ...body, passwordHash: passwordBcrypt, image: prevImage }, { returnDocument: 'after' });
         }
-        else if ((prevImage === null || prevImage === void 0 ? void 0 : prevImage.url) !== body.image) {
+        else if ((prevImage === null || prevImage === void 0 ? void 0 : prevImage.url) !== body.imag) {
             const imgId = prevAuth === null || prevAuth === void 0 ? void 0 : prevAuth.image.public_id;
             if (imgId) {
                 await cloudinary.uploader.destroy(imgId);
             }
-            const newAvatar = body.image;
+            const newAvatar = body.imag;
             const result = await cloudinary.uploader.upload(newAvatar, {
                 folder: 'Users',
                 fetch_format: 'auto',

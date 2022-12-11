@@ -4,7 +4,7 @@ interface CreatedUserBody {
   fullName: string
   email: string
   password: string
-  image: string
+  imag: string
 }
 
 export type {CreatedUserBody}

@@ -1,5 +1,5 @@
 import { cloudinary } from "./cloudinary.js";
-
+ 
 const cloudinaryImagesMethod = async (file, folder) => {
 return new Promise(resolve => {
   cloudinary.uploader.upload(file, {folder}, (err, res) => {

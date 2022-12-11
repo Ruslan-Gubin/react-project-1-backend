@@ -4,7 +4,7 @@ interface UpdateUserBody {
   email: string
   password: string
   prevImage: string   
-  image: string       
+  imag: string       
   id: string
 }
 

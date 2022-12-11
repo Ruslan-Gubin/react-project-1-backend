@@ -1,15 +1,15 @@
-import { productModel } from "../models/index.js";
-import { cloudinaryImagesMethod, cloudinaryImagesRemove } from "../utils/cloudinaryImagesMethod.js";
-import { commentService } from "./commentService.js";
+import { productModel } from '../models/index.js';
+import { cloudinaryImagesMethod, cloudinaryImagesRemove } from '../utils/cloudinaryImagesMethod.js';
+import { commentService } from './commentService.js';
 export class ProductService {
     constructor(model) {
         this.model = model;
     }
     async addProduct(req) {
         if (!req.images) {
-            throw new Error("No images");
+            throw new Error('No images');
         }
-        const { department, title, description, price, oldPrice, quantity, newCategory, select, } = req;
+        const { department, title, description, price, oldPrice, quantity, newCategory, select } = req;
         const category = newCategory ? newCategory : select.value;
         if (!category) {
             return { success: 'no category' };
@@ -18,7 +18,7 @@ export class ProductService {
         const imageUrl = [];
         const files = req.images;
         for (const file of files) {
-            const newImage = await cloudinaryImagesMethod(file, "Products");
+            const newImage = await cloudinaryImagesMethod(file, 'Products');
             imageUrl.push(newImage);
         }
         const newProduct = await this.model.create({
@@ -36,8 +36,8 @@ export class ProductService {
     }
     async getAllSortProducts(req) {
         const department = req.query.department;
-        const searchTitle = req.query.textSearch ? req.query.textSearch : "";
-        const category = req.query.category !== "Все" ? req.query.category : "";
+        const searchTitle = req.query.textSearch ? req.query.textSearch : '';
+        const category = req.query.category !== 'Все' ? req.query.category : '';
         const select = req.query.select;
         const optionSelect = {
             updateDate: { createdAt: -1 },
@@ -51,7 +51,7 @@ export class ProductService {
         const totalLength = await this.model.find({
             $and: [
                 { department },
-                { title: { $regex: `${searchTitle}`, $options: "i" } },
+                { title: { $regex: `${searchTitle}`, $options: 'i' } },
                 { category: { $regex: `${category}` } },
             ],
         });
@@ -60,7 +60,7 @@ export class ProductService {
             .find({
             $and: [
                 { department: department },
-                { title: { $regex: `${searchTitle}`, $options: "i" } },
+                { title: { $regex: `${searchTitle}`, $options: 'i' } },
                 { category: { $regex: `${category}` } },
             ],
         })
@@ -71,14 +71,14 @@ export class ProductService {
     }
     async getOneId(id) {
         if (!id) {
-            throw new Error("Не найден Id продукта");
+            throw new Error('Не найден Id продукта');
         }
         const veiwsUpdate = await this.model.findOneAndUpdate({ _id: id }, { $inc: { viewsCount: 1 } }, { returnDocument: 'after' });
         return veiwsUpdate;
     }
     async getCatigoriesInDepartment(department) {
         if (!department) {
-            throw new Error("Department не найден");
+            throw new Error('Department не найден');
         }
         const departmentArr = await this.model.find({ department: department }, { _id: false, category: 1 });
         const filterArrSet = [];
@@ -90,19 +90,22 @@ export class ProductService {
         const map = filterArrSet.map((item) => {
             return (item = { label: item, value: item });
         });
-        const addAll = [{ label: "Все", value: "Все" }, ...map];
+        const addAll = [{ label: 'Все', value: 'Все' }, ...map];
         return addAll;
     }
+    async getImagesFromSwiper() {
+        const images = await this.model.find({}, { _id: false, images: 1 }).sort({ createdAt: -1 });
+        return images.map((item) => item.images[0].url);
+    }
     async removeProduct(body) {
-        const { _id, images, comments, } = body;
-        await this.model.findByIdAndDelete(_id)
-            .catch(error => console.log(error));
-        await commentService.removeCommentsForTarget(comments)
-            .catch(error => console.log(error));
+        const { _id, images, comments } = body;
+        await this.model
+            .findByIdAndDelete(_id)
+            .catch((error) => console.log(error));
+        await commentService.removeCommentsForTarget(comments).catch((error) => console.log(error));
         for (const item of images) {
             const imgPublicId = item.public_id;
-            cloudinaryImagesRemove(imgPublicId)
-                .catch(error => console.log(error));
+            cloudinaryImagesRemove(imgPublicId).catch((error) => console.log(error));
         }
         return { success: true, remove: _id };
     }
@@ -110,20 +113,42 @@ export class ProductService {
         if (!body) {
             throw new Error('Не получено тело запроса');
         }
-        const { id, description, discount, newQantity, oldPrice, price, title, select, newCategory, remainsImages, imageAddUpdate, imageRemovesUpdate } = body;
+        const { id, description, discount, newQantity, oldPrice, price, title, select, newCategory, remainsImages, imageAddUpdate, imageRemovesUpdate, } = body;
         const category = newCategory ? newCategory : select.value;
         const newImagesUrl = [];
         for (const file of imageAddUpdate) {
-            const newImage = await cloudinaryImagesMethod(file, "Products");
+            const newImage = await cloudinaryImagesMethod(file, 'Products');
             newImagesUrl.push(newImage);
         }
         const images = [...remainsImages, ...newImagesUrl];
         for (const item of imageRemovesUpdate) {
-            await cloudinaryImagesRemove(item)
-                .catch(error => console.log(error));
+            await cloudinaryImagesRemove(item).catch((error) => console.log(error));
         }
         const updatedProduct = await this.model.updateOne({ _id: id }, { images, title, description, discount, quantity: newQantity, oldPrice, price, category });
         return updatedProduct;
+    }
+    async buyProduct(body) {
+        if (!body) {
+            throw new Error('Не получено тело запроса');
+        }
+        const { buyer, product } = body;
+        for (const item of product) {
+            await this.model.findByIdAndUpdate({ _id: item.id }, { $inc: { quantity: -item.counter } }, { returnDocument: 'after' });
+        }
+        return { success: true };
+    }
+    async createrComment(body) {
+        await commentService.createCommentForTarget(body, this.model);
+        return { success: true };
+    }
+    async removeComment(body) {
+        if (!body) {
+            throw new Error('Не указан ID поста или коментария');
+        }
+        const postId = body.targetId;
+        const newArrComments = body.newArrComments;
+        const update = await this.model.updateOne({ _id: postId }, { comments: newArrComments }, { returnDocument: 'after' });
+        return { success: true };
     }
 }
 const productService = new ProductService(productModel);

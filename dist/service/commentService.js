@@ -80,6 +80,15 @@ class CommentService {
             return comment;
         }
     }
+    async createCommentForTarget(body, model) {
+        if (!body) {
+            throw new Error('Не получено тело запроса');
+        }
+        const productId = body.targetId;
+        const commentId = body.commentId;
+        const update = await model.updateOne({ _id: productId }, { $push: { comments: commentId } }, { returnDocument: 'after' });
+        return update;
+    }
     filterArrUsers(disLikesArr, user) {
         return disLikesArr.filter(users => users !== user);
     }

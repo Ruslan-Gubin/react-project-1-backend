@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2018",
-    "lib": ["ES6"],
+    "lib": ["es5","ES6","dom", "dom.iterable"],
     "module": "NodeNext",
     "rootDir": "./src",
     "outDir": "./dist",

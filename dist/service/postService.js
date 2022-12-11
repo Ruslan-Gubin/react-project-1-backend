@@ -138,12 +138,7 @@ class PostService {
         }
     }
     async setAddComment(body) {
-        if (!body) {
-            throw new Error('Не указан ID поста или коментария');
-        }
-        const postId = body.targetId;
-        const commentId = body.commentId;
-        const newPost = await this.model.updateOne({ _id: postId }, { $push: { comments: commentId } }, { returnDocument: 'after' });
+        const newPost = commentService.createCommentForTarget(body, this.model);
         return newPost;
     }
     async setRemoveComment(body) {
@@ -152,7 +147,8 @@ class PostService {
         }
         const postId = body.targetId;
         const newArrComments = body.newArrComments;
-        return await this.model.updateOne({ _id: postId }, { comments: newArrComments }, { returnDocument: 'after' });
+        const update = await this.model.updateOne({ _id: postId }, { comments: newArrComments }, { returnDocument: 'after' });
+        return update;
     }
     async setUpdateLikes(body, userId) {
         if (!body.id) {

@@ -1,8 +1,10 @@
-import {  Response } from "express";
+import { Request, Response } from "express";
 import { productService } from "../service/index.js";
 import * as types from "../types/productTypes/index.js";
 import { handleError } from "../utils/index.js";
 import { IRequestBody, IRequestParams, IRequestQuery } from '../types/IRequestRespons/index.js';
+import { RemoveCommentInPostBody } from "../types/postTypes/RemoveCommentInPost.js";
+
 
 class ProductController {
  
@@ -35,6 +37,15 @@ class ProductController {
         );
       }
 
+  async getImagesFromSwiper(req: Request, res: Response<string[]>) {
+    await productService
+    .getImagesFromSwiper()
+    .then((images) => res.status(200).json(images))
+      .catch((error) =>
+        handleError(res, error.message, "Не удалось получить изображения")
+        );
+      }
+
       async addProduct(req: IRequestBody<types.CreateProductModel>,res: Response<types.CreateProductModelRespons>) {
         const reqBody = req.body;
         await productService
@@ -60,6 +71,31 @@ class ProductController {
         .then((newProduct) => res.status(200).json( newProduct ))
         .catch((error) => handleError(res, error, "Не удалось изменить продукт"));
       }
+      
+      async buyProduct(req: IRequestBody<types.BuyProductBody>, res: Response<{success: boolean}>) {
+        const body = req.body
+        await productService
+        .buyProduct(body)
+        .then((success) => res.status(200).json( success ))
+        .catch((error) => handleError(res, error, "Не удалось создать заказ"));
+      }
+
+      async createrComment(req: IRequestBody<{targetId: string; commentId: string}>, res: Response<{success: boolean}>) {
+        const body = req.body
+        await productService
+        .createrComment(body)
+        .then((response) => res.status(200).json( response ))
+        .catch((error) => handleError(res, error, "Не удалось изменить продукт"));
+      }
+
+      async removeComment(req: IRequestBody<RemoveCommentInPostBody>, res: Response<{success: boolean}>) {
+        const body = req.body
+        await productService
+        .removeComment(body)
+        .then((response) => res.status(200).json( response ))
+        .catch((error) => handleError(res, error, "Не удалось изменить продукт"));
+      }
+
     }
     
     export const productController = new ProductController();

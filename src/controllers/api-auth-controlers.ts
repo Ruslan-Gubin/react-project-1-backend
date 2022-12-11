@@ -3,6 +3,7 @@ import { authService } from '../service/authService.js';
 import { handleError } from '../utils/index.js';
 import { IRequestBody, IRequestParams, IRequestQuery } from '../types/IRequestRespons/index.js';
 import * as types from '../types/userType/index.js';
+import { UpdateWriteOpResult } from 'mongoose';
 
 class AuthController {
   async createUser(req: IRequestBody<types.CreatedUserBody>, res: Response<types.IUser>) {
@@ -78,11 +79,11 @@ class AuthController {
       .catch((error) => handleError(res, error, `Не удалось найти все Email ${req}`));
   }
 
-  async updateUser(req: IRequestBody<types.UpdateUserBody>, res: Response<{ success: boolean }>) {
+  async updateUser(req: IRequestBody<types.UpdateUserBody>, res: Response<{success: boolean}>) {
     const body = req.body;
     await authService
       .update(body)
-      .then(() => res.status(200).json({ success: true }))
+      .then(() => res.status(200).json({success: true})) 
       .catch((error) => handleError(res, error, 'Пользователя не удалось изменить'));
   }
 

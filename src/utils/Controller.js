@@ -1,9 +1,7 @@
 
 
-export default class Controller {
-  constructor(options) {
-    this.service = options.service
-  }
+class Controller {
+  constructor() {}
 
   handlerError(res, error, text) {
     return res.status(500).send({ error, text })

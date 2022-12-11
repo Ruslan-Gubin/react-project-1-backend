@@ -1,7 +1,5 @@
-export default class Controller {
-    constructor(options) {
-        this.service = options.service;
-    }
+class Controller {
+    constructor() { }
     handlerError(res, error, text) {
         return res.status(500).send({ error, text });
     }
@@ -36,3 +34,4 @@ export default class Controller {
             .catch((error) => handleError(res, error, errorText));
     }
 }
+export {};

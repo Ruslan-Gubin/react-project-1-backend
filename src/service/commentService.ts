@@ -1,9 +1,10 @@
-import { Model } from "mongoose";
+import { Model, UpdateWriteOpResult } from "mongoose";
 import { commentModel } from "../models/index.js";
 import { AddLikeCommentBody } from "../types/commentsTypes/AddLikeComment.js";
 import { CreaterCommentBody } from "../types/commentsTypes/CreaterComment.js";
 import { GetUserCommentsQuery } from "../types/commentsTypes/GetUserCommentsType.js";
 import { IComments } from "../types/commentsTypes/IComments.js";
+import { RemoveCommentInPostBody } from "../types/postTypes/RemoveCommentInPost.js";
 
 class CommentService {
  
@@ -114,6 +115,21 @@ class CommentService {
         )
         return comment
       }
+      }
+
+    async  createCommentForTarget(body:{targetId: string; commentId: string}, model: any): Promise<UpdateWriteOpResult> {
+      if (!body) {
+        throw new Error('Не получено тело запроса');
+      }
+      const productId = body.targetId
+      const commentId = body.commentId
+    
+      const update = await model.updateOne(
+        {_id: productId},
+        {$push: {comments: commentId}},
+        {returnDocument: 'after'},
+      ) 
+      return update
       }
 
 

@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, UpdateWriteOpResult } from 'mongoose';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { userModel } from '../models/index.js';
@@ -15,14 +15,14 @@ class AuthService {
   }
 
   async create(body: types.CreatedUserBody): Promise<types.IUser> {
-    if (!body) {
+     if (!body) {
       throw new Error('Не получены данные нового пользователя');
     }
     const pas = body.password;
     const salt = await bcrypt.genSalt(10);
     const passwordBcrypt = await bcrypt.hash(pas, salt);
 
-    const image = body.image;
+    const image = body.imag;
     const resImage = await cloudinary.uploader.upload(image, {
       folder: 'Users',
     });
@@ -240,7 +240,7 @@ class AuthService {
     return result;
   }
 
-  async update(body: types.UpdateUserBody): Promise<any> {
+  async update(body: types.UpdateUserBody): Promise<UpdateWriteOpResult | undefined> {
     const idAuth = body.id;
     const pas = body.password;
     const salt = await bcrypt.genSalt(7);
@@ -249,19 +249,19 @@ class AuthService {
     const prevAuth = await this.model.findOne({ _id: idAuth });
     const prevImage = prevAuth?.image; //find prev image user
 
-    if (body.image === body.prevImage) {
-      return await this.model.updateOne(
+    if (body.imag === body.prevImage) {
+       return await this.model.updateOne(
         { _id: idAuth },
         { ...body, passwordHash: passwordBcrypt, image: prevImage },
         { returnDocument: 'after' },
       );
-    } else if (prevImage?.url !== body.image) {
+    } else if (prevImage?.url !== body.imag) {
       const imgId = prevAuth?.image.public_id;
       if (imgId) {
         await cloudinary.uploader.destroy(imgId); // remove prev avatar
       }
 
-      const newAvatar = body.image;
+      const newAvatar = body.imag;
       const result = await cloudinary.uploader.upload(newAvatar, {
         folder: 'Users',
         fetch_format: 'auto',
@@ -276,8 +276,9 @@ class AuthService {
         },
         { returnDocument: 'after' },
       );
-    }
+    } 
   }
+  
 }
 
 export const authService = new AuthService(userModel);

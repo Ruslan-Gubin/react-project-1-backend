@@ -167,28 +167,18 @@ class PostService {
   }
   
   async setAddComment(body: AddCommentPostBody): Promise<UpdateWriteOpResult> {
-    if (!body) {
-      throw new Error('Не указан ID поста или коментария');
-    }
-    const postId = body.targetId;
-    const commentId = body.commentId;
-
-    const newPost = await this.model.updateOne(
-      { _id: postId },
-      { $push: { comments: commentId } },
-      { returnDocument: 'after' },
-    );
+    const newPost = commentService.createCommentForTarget(body, this.model)
     return newPost;
   }
 
-  async setRemoveComment(body: types.RemoveCommentInPostBody): Promise<UpdateWriteOpResult> {
+  async setRemoveComment(body: types.RemoveCommentInPostBody): Promise<any> {
     if (!body) {
       throw new Error('Не указан ID поста или коментария');
     }
     const postId = body.targetId;
     const newArrComments = body.newArrComments;
-
-    return await this.model.updateOne({ _id: postId }, { comments: newArrComments }, { returnDocument: 'after' });
+    const update = await this.model.updateOne({ _id: postId }, { comments: newArrComments }, { returnDocument: 'after' });
+    return update
   }
 
   async setUpdateLikes(body: types.AddlikesBody, userId: string): Promise<any> {
@@ -269,12 +259,6 @@ class PostService {
       return result;
     }
   }
-
-  // async searchTags(req) {
-  //   const tag = req.query.tags;
-  //   const tags = await this.model.find({ tags: tag });
-  //   return tags;
-  // }
 
 }
 
