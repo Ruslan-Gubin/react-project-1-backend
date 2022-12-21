@@ -3,3 +3,5 @@ export { commentRouter } from "./api-commentRoutes.js";
 export { authRouter } from "./api-authRoutes.js";
 export { postRouter } from "./api-postRoutes.js";
 export { dialogRouter } from "./api-dialogRoutes.js";
+export { playerRouter } from "./api-playerRoutes.js";
+export { mineGameRouter } from "./api-mineRouter.js";

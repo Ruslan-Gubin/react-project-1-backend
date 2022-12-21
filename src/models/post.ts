@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { IPost } from "../types/postTypes/index.js";
 const Schema = mongoose.Schema;
+import { IPost } from "../types/postTypes/index.js";
 
 const postSchema = new Schema<IPost>({
   title: {
