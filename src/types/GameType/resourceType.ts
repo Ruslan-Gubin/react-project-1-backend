@@ -6,6 +6,7 @@ interface minesGameType {
   title: string;
   piple: number;
   income: number;
+  _id:string
 }
 
 export type {minesGameType}

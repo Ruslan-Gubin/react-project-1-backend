@@ -13,7 +13,7 @@ const check = (req: Request) => {
 
 class MineGameConroller {
 
-  async updateLevelMine(req: IRequestBody<types.MineUpdateLevelBody>, res: Response<{success: boolean}>) {
+  async updateLevelMine(req: IRequestBody<types.MineUpdateLevelBody>, res: Response<(value: types.playerType) => void>) {
     const body = req.body
     await mineGameService.updateLevelMine(body)
     .then((data) => res.status(201).json(data))

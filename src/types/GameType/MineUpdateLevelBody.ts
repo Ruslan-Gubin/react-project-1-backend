@@ -7,12 +7,11 @@ interface MineUpdateLevelBody extends Record<string, number | string | ResurceBa
   piple: number
   time: number
   population: number
-  resurce: string
-  incrementIncome: number
   playerId: string
   idMine: string
   resurceBar: ResurceBarType
   resurceBarAfterUpdate: ResurceBarType
+  incomeUpdate: ResurceBarType
 }
 
 export type {MineUpdateLevelBody}

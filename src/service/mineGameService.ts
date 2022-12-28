@@ -1,4 +1,4 @@
-import { Model, UpdateWriteOpResult } from 'mongoose';
+import mongoose, { Model, UpdateWriteOpResult } from 'mongoose';
 import { playerModel } from '../models/index.js';
 import * as types from '../types/GameType/index.js';
 
@@ -11,26 +11,46 @@ const timeout = (callback: () => void, delay:number) => {
 class MineGameService {
   constructor(private readonly model: Model<types.playerType>) {}
 
-  async updateLevelMine(body: types.MineUpdateLevelBody): Promise<any> {
-    const {level, idMine, income, incrementIncome, piple, playerId, population, resurce, time, resurceBar, resurceBarAfterUpdate} = body
-    // console.log(resurceBar)
-    // console.log('-----------------------------') 
-    // console.log(resurceBarAfterUpdate)
+  async updateLevelMine(body: types.MineUpdateLevelBody): Promise<(value: types.playerType) => void> { 
+    const {level, idMine, income,  incomeUpdate, piple, playerId, population,  time, resurceBar, resurceBarAfterUpdate} = body
 
-    return await this.model.findByIdAndUpdate(playerId,
-     {resourceBar: resurceBar},
-     {returnDocument: 'after'}
-     )
+    await this.model.findByIdAndUpdate(playerId,
+      {resourceBar: resurceBar},
+      {returnDocument: 'after'}
+      )
      
-  //  const updateMineFn = async () => {
-  //   }
+    const updateMineFn = async () => { 
+      try {
+      const minesUpdate = await this.model.findOne({_id: playerId}, {mines: true, _id: false})
+      if (minesUpdate) {
+        minesUpdate?.mines.map(item => {
+          if (item._id == idMine) {
+            item.level = level
+            item.income = income
+            item.piple = piple
+          }
+        })
+      }
     
-  // return  timeout(() => updateMineFn(),(time)) 
+      const playerUpdate = await this.model.findByIdAndUpdate(playerId, 
+        {$inc: {population:  population}, income: incomeUpdate, resourceBar: resurceBarAfterUpdate, mines: minesUpdate?.mines},
+        {returnDocument: 'after'}
+        )
+       
+        return playerUpdate
+      
+    } catch (error) {
+      console.log(error)
+    }
+    }
     
+  return  timeout(() => updateMineFn(),(time))  
   }
 
+
+
   async updateMinesFull(body: types.MineUpdateLevelBody): Promise<any> {
-    return await this.model.findByIdAndUpdate('639f6e0f96a0460f0a04372a',
+    return await this.model.findByIdAndUpdate('63a4bd0b0901de8faaeef509',
      {resourceBar: {iron: 750,wheat: 750, wood: 750, clay: 750}},
      {returnDocument: 'after'}
      )
