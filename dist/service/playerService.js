@@ -1,3 +1,4 @@
+import { initialInventory } from '../data/initialInventory.js';
 import { playerModel } from '../models/index.js';
 import { initialParamsOfPlayer } from '../utils/initialParamsOfPlayer.js';
 class PlayerService {
@@ -12,10 +13,12 @@ class PlayerService {
         if (checkPlayer) {
             throw new Error('У пользователя уже есть игра');
         }
+        const firstInventory = initialInventory;
         return await this.model.create({
             user: userId,
             ...initialParamsOfPlayer,
             nameSity,
+            inventory: firstInventory,
         });
     }
     async getOnePlayer(query) {

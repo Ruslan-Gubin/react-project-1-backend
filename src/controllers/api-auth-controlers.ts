@@ -3,7 +3,6 @@ import { authService } from '../service/authService.js';
 import { handleError } from '../utils/index.js';
 import { IRequestBody, IRequestParams, IRequestQuery } from '../types/IRequestRespons/index.js';
 import * as types from '../types/userType/index.js';
-import { UpdateWriteOpResult } from 'mongoose';
 
 class AuthController {
   async createUser(req: IRequestBody<types.CreatedUserBody>, res: Response<types.IUser>) {
@@ -19,12 +18,12 @@ class AuthController {
     await authService
       .login(body)
       .then((user) => res.status(200).json(user))
-      .catch((error) => handleError(res, error, 'Не удалось авторизоватся')); 
+      .catch((error) => handleError(res, error, 'Не удалось авторизоватся!!')); 
   }
 
   async getUserInfo(req: Request, res: Response<types.IUser>) {
     //@ts-ignore start
-    const userId = req.userId;
+    const userId = req.userId; 
     //@ts-ignore end
     await authService
       .getUser(userId)

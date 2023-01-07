@@ -5,3 +5,5 @@ export { postRouter } from "./api-postRoutes.js";
 export { dialogRouter } from "./api-dialogRoutes.js";
 export { playerRouter } from "./api-playerRoutes.js";
 export { mineGameRouter } from "./api-mineRouter.js";
+export { inventoryGameRouter } from "./api-inventoryRoutes.js";
+export { adventureGameRouter } from "./api-adventuresRoutes.js";

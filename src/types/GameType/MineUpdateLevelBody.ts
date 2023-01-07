@@ -1,7 +1,7 @@
-import { ResurceBarType } from "./ResurceBarType.js"
+import { ResourceBarType } from "./ResourceBarType.js"
 
 
-interface MineUpdateLevelBody extends Record<string, number | string | ResurceBarType> {
+interface MineUpdateLevelBody extends Record<string, number | string | ResourceBarType> {
   level: number
   income: number
   piple: number
@@ -9,9 +9,9 @@ interface MineUpdateLevelBody extends Record<string, number | string | ResurceBa
   population: number
   playerId: string
   idMine: string
-  resurceBar: ResurceBarType
-  resurceBarAfterUpdate: ResurceBarType
-  incomeUpdate: ResurceBarType
+  resourceBar: ResourceBarType
+  resourceBarAfterUpdate: ResourceBarType
+  incomeUpdate: ResourceBarType
 }
 
 export type {MineUpdateLevelBody}

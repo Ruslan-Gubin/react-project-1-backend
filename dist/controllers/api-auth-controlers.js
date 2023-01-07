@@ -13,7 +13,7 @@ class AuthController {
         await authService
             .login(body)
             .then((user) => res.status(200).json(user))
-            .catch((error) => handleError(res, error, 'Не удалось авторизоватся'));
+            .catch((error) => handleError(res, error, 'Не удалось авторизоватся!!'));
     }
     async getUserInfo(req, res) {
         const userId = req.userId;

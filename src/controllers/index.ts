@@ -5,3 +5,5 @@ export { authController } from "./api-auth-controlers.js";
 export { dialogController } from "./api-dialog-controllers.js";
 export { playerController } from "./api-player-controllers.js";
 export { mineGameConroller } from "./api-minecontrollers.js";
+export { inventoryGameConroller } from "./api-inventory-controlers.js";
+export { adventureGameConroller } from "./api-adventure-controlers.js";

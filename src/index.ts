@@ -27,6 +27,8 @@ app.use(routes.commentRouter);
 app.use(routes.dialogRouter); 
 app.use(routes.playerRouter);  
 app.use(routes.mineGameRouter);  
+app.use(routes.inventoryGameRouter);  
+app.use(routes.adventureGameRouter);  
 
 app.listen(process.env['PORT'] || 4444, () => {  
    console.log(chalks.success(`Listening port ${process.env['PORT'] || 4444}`)); 

@@ -12,10 +12,10 @@ class MineGameService {
   constructor(private readonly model: Model<types.playerType>) {}
 
   async updateLevelMine(body: types.MineUpdateLevelBody): Promise<(value: types.playerType) => void> { 
-    const {level, idMine, income,  incomeUpdate, piple, playerId, population,  time, resurceBar, resurceBarAfterUpdate} = body
+    const {level, idMine, income,  incomeUpdate, piple, playerId, population,  time, resourceBar, resourceBarAfterUpdate} = body
 
     await this.model.findByIdAndUpdate(playerId,
-      {resourceBar: resurceBar},
+      {resourceBar: resourceBar},
       {returnDocument: 'after'}
       )
      
@@ -33,7 +33,7 @@ class MineGameService {
       }
     
       const playerUpdate = await this.model.findByIdAndUpdate(playerId, 
-        {$inc: {population:  population}, income: incomeUpdate, resourceBar: resurceBarAfterUpdate, mines: minesUpdate?.mines},
+        {$inc: {population:  population}, income: incomeUpdate, resourceBar: resourceBarAfterUpdate, mines: minesUpdate?.mines},
         {returnDocument: 'after'}
         )
        

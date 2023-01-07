@@ -36,5 +36,21 @@ const playerSchema = new Schema({
             income: { type: Number, required: true },
         },
     ],
+    inventory: [
+        {
+            bonus: { type: String, },
+            image: { type: String, },
+            name: { type: String, },
+            purpose: { type: String, },
+            status: { type: Boolean, },
+            cell: { type: Number, },
+            order: { type: Number, },
+        },
+    ],
+    compass: {
+        type: Number,
+        default: 3,
+        required: true
+    }
 }, { timestamps: true });
 export const playerModel = mongoose.model('Player', playerSchema);

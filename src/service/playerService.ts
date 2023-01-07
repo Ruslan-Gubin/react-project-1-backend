@@ -1,4 +1,5 @@
 import { Model, UpdateWriteOpResult } from 'mongoose';
+import { initialInventory } from '../data/initialInventory.js';
 import { playerModel } from '../models/index.js';
 import * as types from '../types/GameType/index.js';
 import { initialParamsOfPlayer } from '../utils/initialParamsOfPlayer.js';
@@ -17,10 +18,13 @@ class PlayerService {
       throw new Error('У пользователя уже есть игра')
     }
 
+    const firstInventory = initialInventory
+
    return await this.model.create({
       user: userId,
       ...initialParamsOfPlayer,
       nameSity,
+      inventory: firstInventory,
     });
     
   }
