@@ -122,14 +122,12 @@ export class ProductService {
 
     return addAll;
   }
-
-  async getImagesFromSwiper(): Promise<string[]> { 
-    const images = await this.model.find({}, { _id: false, images: 1 }).sort({createdAt: -1});
+  /**получаем изображение для swipera*/
+  async getImagesFromSwiper(): Promise<string[]> {
+    const images = await this.model.find({}, { _id: false, images: 1 }).sort({ createdAt: -1 });
 
     return images.map((item) => item.images[0].url);
   }
-
-  
 
   async removeProduct(body: types.RemoveProductModelBody): Promise<types.RemoveProductModelResponse> {
     const { _id, images, comments } = body;
@@ -204,21 +202,24 @@ export class ProductService {
     return { success: true };
   }
 
-  async createrComment(body: {targetId: string; commentId: string}): Promise<{ success: boolean }> {
-   await commentService.createCommentForTarget(body, this.model)
-  return {success: true}
+  async createrComment(body: { targetId: string; commentId: string }): Promise<{ success: boolean }> {
+    await commentService.createCommentForTarget(body, this.model);
+    return { success: true };
   }
 
   async removeComment(body: RemoveCommentInPostBody): Promise<{ success: boolean }> {
     if (!body) {
-      throw new Error('Не указан ID поста или коментария'); 
+      throw new Error('Не указан ID поста или коментария');
     }
     const postId = body.targetId;
     const newArrComments = body.newArrComments;
-    const update = await this.model.updateOne({ _id: postId }, { comments: newArrComments }, { returnDocument: 'after' });
-    return {success: true}
+    const update = await this.model.updateOne(
+      { _id: postId },
+      { comments: newArrComments },
+      { returnDocument: 'after' },
+    );
+    return { success: true };
   }
-
 }
 
 const productService = new ProductService(productModel);

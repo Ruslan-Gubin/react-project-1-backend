@@ -109,7 +109,7 @@ class AuthService {
   }
 
   async setFriendRequest(body: types.AddFriendRequestUserBody) {
-    if (body.user._id && body.guest) {
+    if (!body.user._id && !body.guest) {
       throw new Error('Не указан ID гостя или пользователя');
     }
     const userId = body.user._id;

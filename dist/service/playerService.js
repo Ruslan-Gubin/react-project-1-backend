@@ -19,6 +19,7 @@ class PlayerService {
             ...initialParamsOfPlayer,
             nameSity,
             inventory: firstInventory,
+            adventure: { status: false, extraction: { wood: 0, iron: 0, wheat: 0, clay: 0 } },
         });
     }
     async getOnePlayer(query) {

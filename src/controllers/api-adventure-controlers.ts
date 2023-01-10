@@ -12,11 +12,10 @@ const check = (req: Request) => {
 }
 
 class AdventureGameConroller { 
-
-  async adventureActive(req: IRequestBody<{compasCost: number, timeMs: number, resourceBar: types.ResourceBarType}>, res: Response<{success: boolean}>) {  
+  async adventureActive(req: IRequestBody<types.AdventureActiveBodyType>, res: Response<(value: types.playerType) => void>) {  
     const body = req.body
     await adventuresService.adventureActive(body)
-    .then((data) => res.status(201).json(data))
+    .then((data) => res.status(201).json(data)) 
     .catch((error) => handleError(res, error.message, 'Не удалось отправится в приключение'));
   }
 

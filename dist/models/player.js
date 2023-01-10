@@ -49,8 +49,52 @@ const playerSchema = new Schema({
     ],
     compass: {
         type: Number,
-        default: 3,
+        default: 100,
         required: true
+    },
+    health: {
+        type: Number,
+        default: 100,
+        required: true
+    },
+    level: {
+        type: Number,
+        default: 0,
+        required: true
+    },
+    experience: {
+        type: Number,
+        default: 0,
+        required: true
+    },
+    adventure: {
+        status: {
+            type: Boolean,
+            default: false,
+            required: true
+        },
+        startTime: {
+            type: Number,
+            default: 0,
+            required: true,
+        },
+        endTime: {
+            type: Number,
+            default: 0,
+            required: true,
+        },
+        goBackTime: {
+            type: Number,
+            default: 0,
+            required: true,
+        },
+        extraction: {
+            type: Object,
+            wood: { type: Number, default: 0 },
+            clay: { type: Number, default: 0 },
+            iron: { type: Number, default: 0 },
+            wheat: { type: Number, default: 0 },
+        }
     }
 }, { timestamps: true });
 export const playerModel = mongoose.model('Player', playerSchema);

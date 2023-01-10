@@ -10,7 +10,6 @@ interface MineUpdateLevelBody extends Record<string, number | string | ResourceB
   playerId: string
   idMine: string
   resourceBar: ResourceBarType
-  resourceBarAfterUpdate: ResourceBarType
   incomeUpdate: ResourceBarType
 }
 

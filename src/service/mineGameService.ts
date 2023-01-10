@@ -1,27 +1,24 @@
-import mongoose, { Model, UpdateWriteOpResult } from 'mongoose';
+import  { Model } from 'mongoose';
 import { playerModel } from '../models/index.js';
 import * as types from '../types/GameType/index.js';
+import { resourceBarUpdate } from '../utils/resourceBarUpdate.js';
+import { timeout } from '../utils/timeoutHelpers.js';
 
-const timeout = (callback: () => void, delay:number) => {
-  const tick = () => callback()
-   const timer =   setTimeout( tick, delay)
-  return () => clearTimeout(timer)
-}
 
 class MineGameService {
   constructor(private readonly model: Model<types.playerType>) {}
 
   async updateLevelMine(body: types.MineUpdateLevelBody): Promise<(value: types.playerType) => void> { 
-    const {level, idMine, income,  incomeUpdate, piple, playerId, population,  time, resourceBar, resourceBarAfterUpdate} = body
+    const {level, idMine, income,  incomeUpdate, piple, playerId, population,  time, resourceBar} = body
 
     await this.model.findByIdAndUpdate(playerId,
-      {resourceBar: resourceBar},
+      {resourceBar},
       {returnDocument: 'after'}
       )
      
     const updateMineFn = async () => { 
       try {
-      const minesUpdate = await this.model.findOne({_id: playerId}, {mines: true, _id: false})
+      const minesUpdate = await this.model.findOne({_id: playerId}, {resourceBar: true, capasity: true, income: true, updatedAt: true, mines: true, _id: false})
       if (minesUpdate) {
         minesUpdate?.mines.map(item => {
           if (item._id == idMine) {
@@ -31,9 +28,14 @@ class MineGameService {
           }
         })
       }
+
+      if (!minesUpdate) {
+        throw new Error('Не найдены предыдущие данные')
+      }
+      const resourceBar = resourceBarUpdate.resourceBarUpdate(minesUpdate) 
     
       const playerUpdate = await this.model.findByIdAndUpdate(playerId, 
-        {$inc: {population:  population}, income: incomeUpdate, resourceBar: resourceBarAfterUpdate, mines: minesUpdate?.mines},
+        {$inc: {population:  population}, income: incomeUpdate, resourceBar, mines: minesUpdate?.mines},
         {returnDocument: 'after'}
         )
        
@@ -50,7 +52,7 @@ class MineGameService {
 
 
   async updateMinesFull(body: types.MineUpdateLevelBody): Promise<any> {
-    return await this.model.findByIdAndUpdate('63a4bd0b0901de8faaeef509',
+    return await this.model.findByIdAndUpdate('63b9ab403f6fde7fa76f8de5',
      {resourceBar: {iron: 750,wheat: 750, wood: 750, clay: 750}},
      {returnDocument: 'after'}
      )
