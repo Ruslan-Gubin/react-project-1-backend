@@ -10,7 +10,7 @@ const initialInventory: InventoryType[] = [
     status: false,
     cell: 1,
     image:
-      "https://res.cloudinary.com/ds289tkqj/image/upload/v1673467422/Game/helmet_96879_doij2o.png",
+      "https://res.cloudinary.com/ds289tkqj/image/upload/t_media_lib_thumb/v1673467422/Game/helmet_96879_doij2o.png",
   },
   {
     order: 2,
@@ -40,7 +40,7 @@ const initialInventory: InventoryType[] = [
     status: false,
     cell: 3,
     image:
-      "https://res.cloudinary.com/ds289tkqj/image/upload/v1673468108/Game/png-transparent-breastplate-cuirass-plate-armour-body-armor-armour-spanish-engraving-armor_tldod1.png",
+      "https://res.cloudinary.com/ds289tkqj/image/upload/t_media_lib_thumb/v1673468108/Game/png-transparent-breastplate-cuirass-plate-armour-body-armor-armour-spanish-engraving-armor_tldod1.png",
   },
   {
     order: 5,
