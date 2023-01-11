@@ -8,7 +8,6 @@ interface InventoryType {
   status: boolean;
   cell: number;
   order: number
-  _id: string
 }
 
 export type {InventoryType}
